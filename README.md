@@ -10,6 +10,7 @@ This course provides a unique opportunity for students in the MS in Data Science
 2. David Huang, th3061
 3. Jerry Wang, zw2888
 4. Tom Yu, ty2487
+5. Numan Khan, nk3022
   
 
 ## Instructions
@@ -30,4 +31,55 @@ The CourseInfo folder has the templates for your  reports, progress log, meeting
 4. Meeting Minutes
 
 The code can be placed in a folder named code, and the remaining files can be placed as .pdf files in the root directory.
-   
+
+## Setting Up the Development Environment
+
+1. Clone the project repository to your local machine:
+
+```
+git clone https://github.com/engie4800/dsi-capstone-capstone-kpmg-jim-ben.git
+cd dsi-capstone-capstone-kpmg-jim-ben
+```
+
+2. Create and Activate a Virtual Environment
+
+On Windows, create a virtual environment run `python -m venv chatbot-venv` and activate it by `.\chatbot-venv\Scripts\activate`
+On macOS/Linux, create the virtual environment: create a virtual environment by running `python3 -m venv chatbot-venv` and activate it by `source chatbot-venv/bin/activate`
+
+Note:
+- You can name the environment `chatbot-venv` or whatever you want
+- To exit the virtual environment, run `deactivate`
+- To re-enter the environment run the same command when you previously activated it
+
+3. Install Project Dependencies
+
+```
+pip install -r requirements.txt
+```
+
+4. Define environmental variables
+
+Create a `.env` file in the root of the package and define variables like the following:
+
+```
+NEO4J_URI=uri
+NEO4J_USER=user
+NEO4J_PASSWORD=password
+OPENAI_API_KEY=api_key
+```
+
+4. Running the Application
+
+To run the StreamLit app locally, execute the following command which is essentially running the root file of our project (app.py): `streamlit run code/app.py`.
+
+- General Search
+
+Run any query to call OpenAI's API
+
+- Neo4j Database Query
+
+You can simply enter a cypher query like the following would return the tables in the IT database:
+
+```
+MATCH (db:Database {name: 'IT_Database'})-[:CONTAINS]->(table:Table) RETURN table.name AS tableName
+```

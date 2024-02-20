@@ -47,7 +47,6 @@ On Windows, create a virtual environment run `python -m venv chatbot-venv` and a
 On macOS/Linux, create the virtual environment: create a virtual environment by running `python3 -m venv chatbot-venv` and activate it by `source chatbot-venv/bin/activate`
 
 Note:
-- You can name the environment `chatbot-venv` or whatever you want
 - To exit the virtual environment, run `deactivate`
 - To re-enter the environment run the same command when you previously activated it
 
@@ -67,6 +66,10 @@ NEO4J_USER=user
 NEO4J_PASSWORD=password
 OPENAI_API_KEY=api_key
 ```
+
+Note:
+- Credentials for Neo4j are the same as those when connecting to your instance in the Neo4j console: https://console.neo4j.io/
+- To get an OpenAI API key, go to the following link, setup an account, and generate an API key: https://openai.com/blog/openai-api
 
 4. Running the Application
 

@@ -1,5 +1,6 @@
 from openai import OpenAI
 import os
+from langchain.prompts.prompt import PromptTemplate
 
 class OpenAiClient:
     def __init__(self):

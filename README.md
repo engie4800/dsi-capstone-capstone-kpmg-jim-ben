@@ -77,12 +77,18 @@ To run the StreamLit app locally, execute the following command which is essenti
 
 - General Search
 
-Run any query to call OpenAI's API
+Run any query to call OpenAI's completions API
 
-- Neo4j Database Query
+- RAG Chatbot
 
-You can simply enter a cypher query like the following would return the tables in the IT database:
+Try asking the following questions:
+- Which users have access to the IT_Database and what are their roles?
+- Which report fields will be affected if DepartmentBudget is changed?
+- What are the performance metrics of Budget Model Version, and what are its data element inputs?
 
-```
-MATCH (db:Database {name: 'IT_Database'})-[:CONTAINS]->(table:Table) RETURN table.name AS tableName
-```
+## Resources
+
+- OpenAI Chat Text Generation: https://platform.openai.com/docs/guides/text-generation/chat-completions-api
+- Neo4j Connecting to Python: https://neo4j.com/docs/aura/aurads/connecting/python/
+- Neo4j Python Guide: https://neo4j.com/docs/getting-started/languages-guides/neo4j-python/
+- Neo4j DB QA Chain: https://python.langchain.com/docs/use_cases/graph/graph_cypher_qa#add-examples-in-the-cypher-generation-prompt

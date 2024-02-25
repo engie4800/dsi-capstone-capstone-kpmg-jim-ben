@@ -64,4 +64,4 @@ class LangChainClient:
         result = chain.invoke(user_input)
 
         print(f"Intermediate steps: {result['intermediate_steps']}")
-        return result
+        return result['intermediate_steps']

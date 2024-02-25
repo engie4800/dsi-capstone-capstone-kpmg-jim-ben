@@ -86,6 +86,9 @@ Try asking the following questions:
 - Which report fields will be affected if DepartmentBudget is changed?
 - What are the performance metrics of Budget Model Version, and what are its data element inputs?
 
+Possible additions to base questions:
+- Question about fields in a report? Upstream data (column or model)?
+
 ## Resources
 
 - OpenAI Chat Text Generation: https://platform.openai.com/docs/guides/text-generation/chat-completions-api

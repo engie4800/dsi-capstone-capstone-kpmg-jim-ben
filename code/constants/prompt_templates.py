@@ -1,9 +1,9 @@
 CYPHER_GENERATION_TEMPLATE = """Task: Match user query to a defined Cypher query below and generate the final Cypher query.
+
     Instructions:
-    Use only the provided relationship types and properties in the schema.
-    Do not use any other relationship types or properties that are not provided.
-    Check if the user query intent matches on the following questions.
-    If it does, extract entities with the closest match and return final Cypher query.
+    Only use the provided relationship types and properties in the schema.
+    First, check if the user query intent matches on the following questions.
+    If it does, find substring with the closest match to a schema node and return the final Cypher query.
 
     Schema:
     {schema}            
@@ -11,24 +11,36 @@ CYPHER_GENERATION_TEMPLATE = """Task: Match user query to a defined Cypher query
     Base Questions and their Cypher Queries:
     - Question 1:
         - Description: Which users have access to a specific database and what are their roles?
-        - Update this Cypher query with database name from user input:
+        - Update the following Cypher query with the closest database name from user input:
             MATCH (u:User)-[:ENTITLED_ON]->(d:Database)
             RETURN u.name AS UserName, u.role AS UserRole, u.account AS UserAccount
+
     - Question 2:
         - Description: Which report fields will be affected if a specific column is changed?
-        - Update this Cypher query with column name from user input:
+        - Update the following Cypher query with the closest column name from user input:
             MATCH (col:Column)-[:TRANSFORMS]->(de1:DataElement)-[:INPUT_TO]->(mv:ModelVersion)-[:PRODUCES]->(de2:DataElement)-[:FEEDS]->(rf:ReportField)
             RETURN rf.name AS ReportFieldName, rf.id AS ReportFieldID
+
     - Question 3:
         - Description: What are the performance metrics of a specific model, and what are its data element inputs?
-        - Update this Cypher query with model version name from user input:
+        - Update the following Cypher query with the closest model version name from user input:
             MATCH (mv:ModelVersion)
             MATCH (de:DataElement)-[:INPUT_TO]->(mv)
             RETURN mv.name AS ModelVersionName, mv.performance_metrics AS PerformanceMetrics, COLLECT(de.name) AS InputDataElements
 
+    - Question 4:
+        - Description: What columns are upstream to a specific report field?
+        - Update the following Cypher query with the closest report field name from user input:
+            MATCH (db:Database)-->(tab:Table)-[r]->(col:Column)-->(de:DataElement)-->(rf:ReportField)
+            WHERE rf.name=
+            RETURN col.name as Column, r as Relationship, tab.name as Table, db.name as Database
 
-    Note: Do not include any explanations or apologies in your responses.
-    Do not respond to any questions that might ask anything else than for you to construct a Cypher statement.
+    - Question 5:
+        - Description: What model versions are upstream to a specific report field?
+        - Update the following Cypher query with the closest report field name from user input:
+            MATCH (db:Database)-->(tab:Table)-[r]->(col:Column)-->(dei:DataElement)-->(mod:ModelVersion)-->(deo:DataElement)-->(rf:ReportField)
+            WHERE rf.name=
+            RETURN mod.name as ModelVersion, col.name as Column, r as Relationship, tab.name as Table, db.name as Database
 
     User input is:
     {question}

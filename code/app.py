@@ -29,14 +29,6 @@ if st.button("Submit"):
 
             if cypher_query_result:
                 openai_service = OpenAiClient()
-
-                # response_template = f"""
-                #     Given this user input: {query}
-                #     And data from the Neo4j database: {cypher_query_result[1]}
-
-                #     Task: Generate a brief response to the user input
-                #     Note: Only mention the answer to the user input, no details about the database
-                # """
                 response_template = USER_RESPONSE_TEMPLATE.format(query=query, cypher_query_result=cypher_query_result[1])
                 response = openai_service.get_openai_response(response_template)
 

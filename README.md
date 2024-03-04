@@ -85,6 +85,8 @@ Try asking the following questions:
 - Which users have access to the IT_Database and what are their roles?
 - Which report fields will be affected if DepartmentBudget is changed?
 - What are the performance metrics of Budget Model Version, and what are its data element inputs?
+- What model versions are upstream to the Predicted Satisfaction Score report field?
+- What columns are upstream to the Top Performing Regions report field?
 
 
 TODO:

@@ -10,32 +10,53 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-st.title("Demo Streamlit App")
-query_type = st.radio("Choose the type of your query:", ["General Search", "RAG Chatbot"])
-query = st.text_input("Enter your query here:")
+# Call LangChain for intent matching, Cypher query generation and execution
+# Given Cypher query response, call OpenAI API to create final response
+def rag_chatbot(input):
+    langChainClient = LangChainClient()
+    cypher_query_result = langChainClient.run_template_generation(input)
 
-if st.button("Submit"):
+    if cypher_query_result:
+        openai_service = OpenAiClient()
+        response_template = USER_RESPONSE_TEMPLATE.format(query=input, cypher_query_result=cypher_query_result[1])
+        response = openai_service.get_openai_response(response_template)
 
-    if query_type == "General Search":
-        with st.spinner("Fetching answer"):
-            openai_service = OpenAiClient()
-            response = openai_service.get_openai_response(query)
-            st.write(response.choices[0].message.content)
+        if response:
+            return response.choices[0].message.content
+        else:
+            logging.error("Error when generating final response")
+    else:
+        logging.error("Error when retrieving data from the database")
+        return "No data found."
 
-    elif query_type == "RAG Chatbot":
-        with st.spinner("Fetching answer"):
-            langChainClient = LangChainClient()
-            cypher_query_result = langChainClient.run_template_generation(query)
 
-            if cypher_query_result:
-                openai_service = OpenAiClient()
-                response_template = USER_RESPONSE_TEMPLATE.format(query=query, cypher_query_result=cypher_query_result[1])
-                response = openai_service.get_openai_response(response_template)
+# Setup Streamlit app
+def main():
+    st.title("Model Metadata RAG Chatbot")
+    # Initialize chat history
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
 
-                if response:
-                    st.write(response.choices[0].message.content)
-                else:
-                    logging.error("Error when generating final response")
-            else:
-                st.write("No data found.")
-                logging.error("Error when retrieving data from the database")
+    # Display chat messages from history on app rerun
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    # React to user input
+    if prompt := st.chat_input("Please enter your request here"):
+
+        # Display user message in chat message container
+        st.chat_message("user").markdown(prompt)
+        st.session_state.messages.append({"role": "user", "content": prompt})
+
+        # Call RAG chatbot
+        response = rag_chatbot(prompt)
+
+        # Display chatbot response in chat message container
+        with st.chat_message("assistant"):
+            st.markdown(response)
+        st.session_state.messages.append({"role": "assistant", "content": response})
+
+
+if __name__ == '__main__':
+    main()

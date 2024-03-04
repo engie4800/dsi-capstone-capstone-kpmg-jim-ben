@@ -90,17 +90,27 @@ Try asking the following questions:
 
 
 TODO:
-- Handle fuzzy entity extraction
 - Remove negative words in prompt template
 - Question about fields in a report? Upstream data (column or model)? 2 queries where we ask model first and then columns?
 - Add StreamLit conversation flow
 
-- Look into React prompting
+- Handle fuzzy entity extraction (change the cypher query to make the partial match)
+- Add previous message response to successive request template?
 - Experiment with known questions that should map to RAG chatbot's base questions
+- Write a script to evaluate Cypher query generation and data retrieval
+- Experiment using other LLMs: Llama
+    - One LLM for intent matching, another one for Cypher query generation, last one for user response generation
+
+- How far upstream? And more context?
+- Focus more on report data upstream and downstream
+
+- Look into React prompting
 - If intent cannot be matched to base questions, create staged general workflow
 - Look into LangSmith for version tracking
-- Evaluate Cypher query generation and data retrieval
-- Experiment using other LLMs
+
+- Long term goals:
+    - Analyze latency time for steps
+    - Integrate neo4j graph visuals
 
 ## Resources
 

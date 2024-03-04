@@ -3,6 +3,7 @@ import streamlit as st
 from clients.neo4j_client import Neo4jClient
 from clients.openai_client import OpenAiClient
 from clients.langchain_client import LangChainClient
+from constants.prompt_templates import USER_RESPONSE_TEMPLATE
 import logging
 
 from dotenv import load_dotenv
@@ -29,13 +30,14 @@ if st.button("Submit"):
             if cypher_query_result:
                 openai_service = OpenAiClient()
 
-                response_template = f"""
-                    Given this user input: {query}
-                    And data from the Neo4j database: {cypher_query_result[1]}
+                # response_template = f"""
+                #     Given this user input: {query}
+                #     And data from the Neo4j database: {cypher_query_result[1]}
 
-                    Task: Generate a brief response to the user input
-                    Note: Only mention the answer to the user input, no details about the database
-                """
+                #     Task: Generate a brief response to the user input
+                #     Note: Only mention the answer to the user input, no details about the database
+                # """
+                response_template = USER_RESPONSE_TEMPLATE.format(query=query, cypher_query_result=cypher_query_result[1])
                 response = openai_service.get_openai_response(response_template)
 
                 if response:

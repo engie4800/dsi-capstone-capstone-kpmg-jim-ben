@@ -86,8 +86,19 @@ Try asking the following questions:
 - Which report fields will be affected if DepartmentBudget is changed?
 - What are the performance metrics of Budget Model Version, and what are its data element inputs?
 
-Possible additions to base questions:
-- Question about fields in a report? Upstream data (column or model)?
+
+TODO:
+- Handle fuzzy entity extraction
+- Remove negative words in prompt template
+- Question about fields in a report? Upstream data (column or model)? 2 queries where we ask model first and then columns?
+- Add StreamLit conversation flow
+
+- Look into React prompting
+- Experiment with known questions that should map to RAG chatbot's base questions
+- If intent cannot be matched to base questions, create staged general workflow
+- Look into LangSmith for version tracking
+- Evaluate Cypher query generation and data retrieval
+- Experiment using other LLMs
 
 ## Resources
 

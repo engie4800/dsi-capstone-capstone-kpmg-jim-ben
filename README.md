@@ -82,12 +82,11 @@ Run any query to call OpenAI's completions API
 - RAG Chatbot
 
 Try asking the following questions:
-- Which users have access to the IT_Database and what are their roles?
-- Which report fields will be affected if DepartmentBudget is changed?
-- What are the performance metrics of Budget Model Version, and what are its data element inputs?
-- What model versions are upstream to the Predicted Satisfaction Score report field?
+- Which users have access to the IT database and what are their roles?
+- Which report fields will be affected if FeedbackComments is changed?
+- What are the performance metrics of Customer Satisfaction Prediction Model, and what are its data element inputs?
 - What columns are upstream to the Top Performing Regions report field?
-
+- What model versions are upstream to the Predicted Satisfaction Score report field?
 
 TODO:
 - Remove negative words in prompt template

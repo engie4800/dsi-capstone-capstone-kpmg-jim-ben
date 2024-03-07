@@ -11,35 +11,40 @@ CYPHER_GENERATION_TEMPLATE = """Task: Match user query to a defined Cypher query
     Base Questions and their Cypher Queries:
     - Question 1:
         - Description: Which users have access to a specific database and what are their roles?
-        - Update the following Cypher query with the closest database name from user input:
+        - Update the following Cypher query with the database name from user input:
             MATCH (u:User)-[:ENTITLED_ON]->(d:Database)
+            WHERE d.name CONTAINS "DATABASE NAME"
             RETURN u.name AS UserName, u.role AS UserRole, u.account AS UserAccount
 
     - Question 2:
         - Description: Which report fields will be affected if a specific column is changed?
-        - Update the following Cypher query with the closest column name from user input:
+        - Update the following Cypher query with the column name from user input:
             MATCH (col:Column)-[:TRANSFORMS]->(de1:DataElement)-[:INPUT_TO]->(mv:ModelVersion)-[:PRODUCES]->(de2:DataElement)-[:FEEDS]->(rf:ReportField)
+            WHERE col.name CONTAINS "COLUMN NAME"
             RETURN rf.name AS ReportFieldName, rf.id AS ReportFieldID
 
     - Question 3:
         - Description: What are the performance metrics of a specific model, and what are its data element inputs?
-        - Update the following Cypher query with the closest model version name from user input:
-            MATCH (mv:ModelVersion)
+        - Update the following Cypher query with the model name from user input:
+            MATCH (m:Model)-[:LATEST_VERSION]->(mv)
+            WHERE m.name CONTAINS "MODEL NAME"
+            WITH mv.name AS latestVersionName
             MATCH (de:DataElement)-[:INPUT_TO]->(mv)
-            RETURN mv.name AS ModelVersionName, mv.performance_metrics AS PerformanceMetrics, COLLECT(de.name) AS InputDataElements
+            WHERE mv.name = latestVersionName
+            RETURN mv.performance_metrics AS PerformanceMetrics, COLLECT(de.name) AS InputDataElements
 
     - Question 4:
         - Description: What columns are upstream to a specific report field?
-        - Update the following Cypher query with the closest report field name from user input:
+        - Update the following Cypher query with the report field name from user input:
             MATCH (db:Database)-->(tab:Table)-[r]->(col:Column)-->(de:DataElement)-->(rf:ReportField)
-            WHERE rf.name=
+            WHERE rf.name CONTAINS "REPORT FIELD NAME"
             RETURN col.name as Column, r as Relationship, tab.name as Table, db.name as Database
 
     - Question 5:
         - Description: What model versions are upstream to a specific report field?
-        - Update the following Cypher query with the closest report field name from user input:
+        - Update the following Cypher query with the report field name from user input:
             MATCH (db:Database)-->(tab:Table)-[r]->(col:Column)-->(dei:DataElement)-->(mod:ModelVersion)-->(deo:DataElement)-->(rf:ReportField)
-            WHERE rf.name=
+            WHERE rf.name CONTAINS "REPORT FIELD NAME"
             RETURN mod.name as ModelVersion, col.name as Column, r as Relationship, tab.name as Table, db.name as Database
 
     User input is:

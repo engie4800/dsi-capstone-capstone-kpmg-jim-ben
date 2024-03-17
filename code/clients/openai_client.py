@@ -1,24 +1,23 @@
 from openai import OpenAI
 import os
-from langchain.prompts.prompt import PromptTemplate
+from retry import retry
 
 class OpenAiClient:
-    def __init__(self):
+    def __init__(self,
+                 model_name: str = "gpt-3.5-turbo",
+        ) -> None:
         self.client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
-        self.gptmodel = "gpt-3.5-turbo"
-        self.userrole = "user"
-        self.pre_prompt = "Give me information about the following, "
+        self.model = model_name
 
-    def get_openai_response(self, prompt):
+    @retry(tries=3, delay=1)
+    def generate(self, message: str) -> str:
         try:
-            response = self.client.chat.completions.create(
-                model=self.gptmodel,
-                messages=[
-                    {"role": self.userrole, "content": self.pre_prompt + prompt}
-                ]
+            completions = self.client.chat.completions.create(
+                model=self.model,
+                messages=[{"role": "user", "content": message}]
             )
 
-            return response
+            return completions.choices[0].message.content
         except Exception as e:
-            print(f"An error occurred: {e}")
-            return "I'm sorry, I couldn't complete your request."
+            print(f"Retrying LLM call {e}")
+            raise Exception()

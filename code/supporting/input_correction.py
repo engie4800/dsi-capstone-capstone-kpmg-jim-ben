@@ -30,14 +30,11 @@ class LangChainIntegration:
                 names.append(item['n']['name'])
         return names
 
-    def generate_response(self, user_input):
-        query = "MATCH (n) RETURN n"
+    def generate_response(self, user_input, parameter_type):
+        query = f"MATCH (n:{parameter_type}) RETURN n"
         result = self.neo4j_graph.query(query)
         names_list = self.extract_names_from_result(result=result)
-        if len(names_list) > 100:
-            print('Nodes List loads successfully!')
-        else:
-            print('Failed to Load Nodes List')
+        print(f"Fetched relevant node names: {names_list}")
 
         system_template = "You are a language expert. Find the closest word match in the {database_nodes} and replace it, and give me the modified user input"
         system_message_prompt = SystemMessagePromptTemplate.from_template(system_template)

@@ -111,6 +111,11 @@ TODO:
     - Analyze latency time for steps
     - Integrate neo4j graph visuals
 
+
+- Scripts:
+    - Intent matching
+    - Uncommon cypher query generation
+
 ## Resources
 
 - OpenAI Chat Text Generation: https://platform.openai.com/docs/guides/text-generation/chat-completions-api

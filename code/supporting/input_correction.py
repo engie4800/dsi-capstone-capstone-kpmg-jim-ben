@@ -31,7 +31,12 @@ class LangChainIntegration:
         return names
 
     def generate_response(self, user_input, parameter_type):
-        query = f"MATCH (n:{parameter_type}) RETURN n"
+        # If the parameter type is provided, we only retrieve those types of nodes
+        if parameter_type:
+            query = f"MATCH (n:{parameter_type}) RETURN n"
+        else:
+            query = "MATCH (n) RETURN n"
+        
         result = self.neo4j_graph.query(query)
         names_list = self.extract_names_from_result(result=result)
         print(f"Fetched relevant node names: {names_list}")

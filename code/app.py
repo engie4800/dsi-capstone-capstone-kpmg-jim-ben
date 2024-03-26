@@ -1,11 +1,11 @@
-import os
 import streamlit as st
 from clients.neo4j_client import Neo4jClient
 from clients.openai_client import OpenAiClient
 from clients.langchain_client import LangChainClient
 from constants.prompt_templates import USER_RESPONSE_TEMPLATE, INTENT_MATCHING_TEMPLATE
-from constants.chatbot_responses import FAILED_INTENT_MATCH, CYPHER_QUERY_ERROR
+from constants.chatbot_responses import FAILED_INTENT_MATCH, CYPHER_QUERY_ERROR, NOT_RELEVANT_USER_REQUEST
 from supporting.input_correction import LangChainIntegration
+from constants.db_constants import DATABASE_SCHEMA
 
 import logging
 
@@ -13,50 +13,67 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-# Call LangChain for intent matching, Cypher query generation and execution
-# Given Cypher query response, call OpenAI API to create final response
+INTENT_MATCHING_COMMON_QUESTION_DELIMITER = ','
+
+# Cleans up response from intent matching
+def extract_intent_match(input):
+    if len(input) > 0:
+        return input[1:-1]
+
+# RAG Chatbot Orchestrator
+#     1. Intent matching to determine if user request is a common, uncommon, or irrelevant question
+#         - If its common, we use the extracted input parameter, update the expected Cypher query, and directly call Neo4j
+#         - If its uncommon, we call GraphCypherQAChain with some example Cypher queries to generate a Cypher query
+#         - If its irrelevant, we let the user know that we don't support their request
+#     2. For common and uncommon Cypher query results, we pass the user request and query result to a LLM to generate the final response
 def rag_chatbot(input):
     print(f"User request: {input}")
     openai = OpenAiClient()
 
     # Intent matching
-    intent_matching_response = openai.generate(INTENT_MATCHING_TEMPLATE.format(question=input))
+    intent_matching_response = openai.generate(INTENT_MATCHING_TEMPLATE.format(schema=DATABASE_SCHEMA, question=input))
     print(f"Intent matching result: {intent_matching_response}")
 
-    if "None" in intent_matching_response or "," not in intent_matching_response:
+    if len(intent_matching_response) == 0:
+        print("ERROR: Problem occurred during intent matching")
         return FAILED_INTENT_MATCH
-    else:
-        intent_matching_response_parts = intent_matching_response.split(",")
-        intent_id = intent_matching_response_parts[0]
-        parameter_name = intent_matching_response_parts[1]
+    
+    # Extract relevant data from intent matching response
+    intent_match_response_data = extract_intent_match(intent_matching_response)
+    intent_match_response_data = intent_match_response_data.split(INTENT_MATCHING_COMMON_QUESTION_DELIMITER)
+    intent_type = intent_match_response_data[0]
 
-        # Input correction
-        langchain_integration = LangChainIntegration()
-        corrected_input = langchain_integration.generate_response(input, parameter_name)
-        print(f"Corrected input: {corrected_input}")
-
-        # Cypher query generation
+    # Irrelevant user request
+    if intent_type == "NONE":
+        return NOT_RELEVANT_USER_REQUEST
+    
+    # We call LangChain+LLM to generate a Cypher query for uncommon questions 
+    elif intent_type == "UNCOMMON":
         langchain_client = LangChainClient()
         try:
-            cypher_query_response = langchain_client.run_template_generation(f"{corrected_input}|{intent_id}|{parameter_name}")
-            print(f"\nCypher query response: {cypher_query_response[1]}\n")
+            cypher_query_response = langchain_client.run_template_generation(input)
 
-            # Return error message when no data is found
+            # When no data is found, retry with input correction
             if len(cypher_query_response[1]) == 0:
-                return CYPHER_QUERY_ERROR
+                input_corrector = LangChainIntegration()
+                updated_user_input = input_corrector.generate_response(input, '')
+                cypher_query_response = langchain_client.run_template_generation(updated_user_input)            
         except Exception as e:
-            print(e)
+            print(f"ERROR: {e}")
             return CYPHER_QUERY_ERROR
 
-
-        # Chatbot response generation
+        # Final response generation
         chatbot_response_template = USER_RESPONSE_TEMPLATE.format(query=input, cypher_query_response=cypher_query_response[1])
         response = openai.generate(chatbot_response_template)
         print(f"Chatbot response: {response}")
         return response
+    
+    # TODO: We extract the input parameters, update the expected Cypher query, and call Neo4j directly
+    else:
+        return f"This is a common question"
 
 
-# Setup Streamlit app
+# Setup StreamLit app
 def main():
     st.title("Model Metadata RAG Chatbot")
     # Initialize chat history

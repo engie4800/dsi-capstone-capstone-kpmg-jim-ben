@@ -2,23 +2,16 @@ import streamlit as st
 from clients.neo4j_client import Neo4jClient
 from clients.openai_client import OpenAiClient
 from clients.langchain_client import LangChainClient
+from components.intent_matching import get_request_intent
 from constants.prompt_templates import USER_RESPONSE_TEMPLATE, INTENT_MATCHING_TEMPLATE
-from constants.chatbot_responses import FAILED_INTENT_MATCH, CYPHER_QUERY_ERROR, NOT_RELEVANT_USER_REQUEST
+from constants.chatbot_responses import CHATBOT_INTRO_MESSAGE, FAILED_INTENT_MATCH, CYPHER_QUERY_ERROR, NOT_RELEVANT_USER_REQUEST
 from supporting.input_correction import LangChainIntegration
 from constants.db_constants import DATABASE_SCHEMA
-
 import logging
 
 from dotenv import load_dotenv
 load_dotenv()
 
-
-INTENT_MATCHING_COMMON_QUESTION_DELIMITER = ','
-
-# Cleans up response from intent matching
-def extract_intent_match(input):
-    if len(input) > 0:
-        return input[1:-1]
 
 # RAG Chatbot Orchestrator
 #     1. Intent matching to determine if user request is a common, uncommon, or irrelevant question
@@ -30,18 +23,8 @@ def rag_chatbot(input):
     print(f"User request: {input}")
     openai = OpenAiClient()
 
-    # Intent matching
-    intent_matching_response = openai.generate(INTENT_MATCHING_TEMPLATE.format(schema=DATABASE_SCHEMA, question=input))
-    print(f"Intent matching result: {intent_matching_response}")
-
-    if len(intent_matching_response) == 0:
-        print("ERROR: Problem occurred during intent matching")
-        return FAILED_INTENT_MATCH
-    
-    # Extract relevant data from intent matching response
-    intent_match_response_data = extract_intent_match(intent_matching_response)
-    intent_match_response_data = intent_match_response_data.split(INTENT_MATCHING_COMMON_QUESTION_DELIMITER)
-    intent_type = intent_match_response_data[0]
+    # Get user request intent
+    intent_type = get_request_intent(input, openai)
 
     # Irrelevant user request
     if intent_type == "NONE":
@@ -78,7 +61,7 @@ def main():
     st.title("Model Metadata RAG Chatbot")
     # Initialize chat history
     if "messages" not in st.session_state:
-        st.session_state.messages = []
+        st.session_state.messages = [{"role": "assistant", "content": CHATBOT_INTRO_MESSAGE}]
 
     # Display chat messages from history on app rerun
     for message in st.session_state.messages:

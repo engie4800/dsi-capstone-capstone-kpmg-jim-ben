@@ -8,7 +8,7 @@ from langchain.prompts import (
 from langchain_community.graphs import Neo4jGraph
 from langchain_openai import ChatOpenAI
 
-class LangChainIntegration:
+class FuzzyMatching:
     def __init__(self):
         load_dotenv()  # Load environment variables from .env file
         neo4j_uri = os.getenv('NEO4J_URI')
@@ -31,20 +31,27 @@ class LangChainIntegration:
         return names
 
     def generate_response(self, user_input, parameter_type):
-        # If the parameter type is provided, we only retrieve those types of nodes
-        if parameter_type:
-            query = f"MATCH (n:{parameter_type}) RETURN n"
-        else:
-            query = "MATCH (n) RETURN n"
-        
+        query = f"MATCH (n:{parameter_type}) RETURN n"
         result = self.neo4j_graph.query(query)
         names_list = self.extract_names_from_result(result=result)
         print(f"Fetched relevant node names: {names_list}")
 
-        system_template = "You are a language expert. Find the closest word match in the {database_nodes} and replace it, and give me the modified user input"
+        system_template ='''You are an Enlish word fuzzy matcing expert. First, you need to understand the user_input and find out the key_words in the input.
+                            Next, find the closest word matched with key_words in the database_nodes:{database_nodes} and replace it, and give me the modified user_input.
+                            For example 
+                            1: toP_PerfoEmin_Regions should be Top Performing Regions 
+                            2: IT Database should be IT_Database 
+                            3. "Which report fields will be affected if Fedback_Comments is changed?" should be "Which report fields will be affected if FeedbackComments is changed?"
+                            since Top Performing Regions, IT_Database and FeedbackComments are the corect node name in database_nodes
+                            '''
+                            
         system_message_prompt = SystemMessagePromptTemplate.from_template(system_template)
 
-        human_template = "Replace the words in: {user_input} with the similar words in database_nodes. For example toP_PerfoEmin_Regions should be Top Performing Regions, or IT Database to IT_Database"
+        human_template = '''Replace the words in user_input: {user_input} with the similar words in database_nodes. 
+                            Note: Do not include any explanations or apologies in your responses.
+                            Do not respond to any questions that might ask anything else than for you to do word fuzzy matching.
+                            Give me back ONLY the modified user_input.This is very important if you want to get paid.
+                            '''
         human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
 
         chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
@@ -59,12 +66,12 @@ class LangChainIntegration:
 
         print('========Fixed User Input====================')
         print(response.content)
-        print('============================================')
+        print(' ')
         return response.content
 
 # if __name__ == "__main__":
 #     langchain_integration = LangChainIntegration()
 
-#     user_input = "Which users have access to the Executive Management Database and what are their roles?"
-#     response = langchain_integration.generate_response(user_input)
+#     user_input = "What model versions are upstream to the predicted_satisfaction_score report field?"
+#     response = langchain_integration.generate_response(user_input,parameter_type='ReportField')
 #     print(response)

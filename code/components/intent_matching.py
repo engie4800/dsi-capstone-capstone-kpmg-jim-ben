@@ -20,7 +20,12 @@ def get_request_intent(user_request, llm):
     # Extract relevant data from intent matching response
     if intent_match_response_data:
         intent_match_response_data = intent_match_response_data.split(INTENT_MATCHING_COMMON_QUESTION_DELIMITER)
-        intent_type = intent_match_response_data[0]
-        return intent_type
+        # Clean up each item in the list by stripping leading and trailing whitespace
+        intent_match_response_data = [item.strip() for item in intent_match_response_data]
+        if len(intent_match_response_data) == 1:
+            intent_type = intent_match_response_data[0]
+            return intent_type
+        else:
+            return intent_match_response_data
     else:
         return FAILED_INTENT_MATCH

@@ -4,7 +4,9 @@ INTENT_MATCHING_TEMPLATE = """
     If it is NOT relevant, return [NONE]
 
     If it is relevant, step 2, match user request intent to one of the following "common questions" and return the question number
-    and the parameter type.
+    and the parameter type and the parameter. MAKE SURE the result is in the following format and same order!!!:
+    [COMMON,question number,Parameter type,parmeter1,parmeter2....]
+    For example: [COMMON,7,ReportField,Sales Confidence Interval] or [COMMON,6,ModelVersion,Employee Productivity Model Version1,Employee Productivity Model Version2]
     
     And if it doesn't match any of the following 7 questions, return [UNCOMMON]
 
@@ -31,7 +33,19 @@ INTENT_MATCHING_TEMPLATE = """
 
     Example 4 (Relevant AND intent matched to questions above):
     - Question: What are the performance metrics of Customer Satisfaction Prediction Model, and what are its data element inputs?
-    - Answer: [COMMON,3,Model]
+    - Answer: [COMMON,3,Model,Customer Satisfaction Prediction Model]
+
+    Example 5 (Relevant AND intent matched to questions above):
+    - Question: Which users have access to the IT_Database and what are their roles?
+    - Answer: [COMMON,1,Database,IT_Database]
+
+    Example 6 (Relevant AND intent matched to questions above):
+    - Question: How was the Sales Confidence Interval report field calculated?
+    - Answer: [COMMON,7,ReportField,Sales Confidence Interval]
+
+    Example 7 (Relevant AND intent matched to questions above):
+    - Question: What is the difference between model versions 1 and 2 for the Employee Productivity Model?
+    - Answer: [COMMON,6,ModelVersion,Employee Productivity Model Version1,Employee Productivity Model Version2]
 
     Schema:
     {schema}

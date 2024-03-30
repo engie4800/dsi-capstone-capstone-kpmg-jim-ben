@@ -5,9 +5,10 @@ from clients.langchain_client import LangChainClient
 from components.intent_matching import get_request_intent
 from constants.prompt_templates import USER_RESPONSE_TEMPLATE, INTENT_MATCHING_TEMPLATE
 from constants.chatbot_responses import CHATBOT_INTRO_MESSAGE, FAILED_INTENT_MATCH, CYPHER_QUERY_ERROR, NOT_RELEVANT_USER_REQUEST
-from supporting.input_correction import LangChainIntegration
+from components.fuzzy_matching import FuzzyMatching
 from constants.db_constants import DATABASE_SCHEMA
 import logging
+from constants.query_templates import query_dic
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -38,7 +39,7 @@ def rag_chatbot(input):
 
             # When no data is found, retry with input correction
             if len(cypher_query_response[1]) == 0:
-                input_corrector = LangChainIntegration()
+                input_corrector = FuzzyMatching()
                 updated_user_input = input_corrector.generate_response(input, '')
                 cypher_query_response = langchain_client.run_template_generation(updated_user_input)            
         except Exception as e:
@@ -50,10 +51,80 @@ def rag_chatbot(input):
         response = openai.generate(chatbot_response_template)
         print(f"Chatbot response: {response}")
         return response
-    
-    # TODO: We extract the input parameters, update the expected Cypher query, and call Neo4j directly
+    # Assuming the existence of the following elsewhere in your code:
+# - Neo4jClient is properly defined and able to execute queries.
+# - query_dic is a dictionary where keys are integers (question numbers) and values are query templates.
+# - USER_RESPONSE_TEMPLATE is defined for formatting the final chatbot response.
+
+# Improved handling of intent_type and query construction
     else:
-        return f"This is a common question"
+        common_question_number = int(intent_type[1])
+        parameter_type = intent_type[2]
+        parameter1 = intent_type[3]
+        parameter2 = intent_type[4] if len(intent_type) > 4 else None
+
+        try:
+            if parameter2:
+                query = query_dic[common_question_number].format(parameter1=parameter1, parameter2=parameter2)
+            else:
+                query = query_dic[common_question_number].format(parameter1=parameter1)
+        except KeyError as e:
+            print(f"KeyError: {e} - Invalid question number or parameter name.")
+            # Handle error or return a response indicating the issue
+            return "An error occurred while constructing the query. Please try again."
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            # Handle unexpected errors gracefully
+            return "An unexpected error occurred. Please try again."
+
+        print(f"QUERY: {query}")
+
+        try:
+            Neo4j = Neo4jClient()
+            result = Neo4j.execute_query(query)
+            print(f"Result: {result}")
+            # Try fuzzy mathcing if no data is found
+            if len(result) == 0:
+                fuzzyMatcher = FuzzyMatching()
+                updated_user_input = fuzzyMatcher.generate_response(user_input = input, parameter_type = parameter_type)
+                rag_chatbot(updated_user_input)
+
+        except Exception as e:
+            print(f"Error executing query in Neo4j: {e}")
+            return "An error occurred while executing the query. Please try again."
+
+        # Final response generation
+        try:
+            chatbot_response_template = USER_RESPONSE_TEMPLATE.format(query=input, cypher_query_response=result)
+            response = openai.generate(chatbot_response_template)
+            print(f"Chatbot response: {response}")
+            return response
+        except Exception as e:
+            print(f"Error generating chatbot response: {e}")
+            return "An error occurred while generating the chatbot response. Please try again."
+
+
+
+
+
+    # # TODO: We extract the input parameters, update the expected Cypher query, and call Neo4j directly
+    # else:
+    #     common_question_number = int(intent_type[1])
+    #     parameter1 = intent_type[2]
+    #     if intent_type[3]:
+    #         parameter2 = intent_type[3]
+    #         query = query_dic[common_question_number].format(parameter1 = parameter1, parameter2 = parameter2)
+    #     else:
+    #         query = query_dic[common_question_number].format(parameter1 = parameter1)
+    #     print(f"QUERY: {query}")
+    #     Neo4j = Neo4jClient()
+    #     result = Neo4j.execute_query(query)
+    #     print(f"Result: {result}")
+    #     # Final response generation
+    #     chatbot_response_template = USER_RESPONSE_TEMPLATE.format(query=input, cypher_query_response=result)
+    #     response = openai.generate(chatbot_response_template)
+    #     print(f"Chatbot response: {response}")
+    #     return response
 
 
 # Setup StreamLit app

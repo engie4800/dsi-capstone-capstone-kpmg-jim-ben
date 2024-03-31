@@ -20,7 +20,7 @@ load_dotenv()
 #         - If its uncommon, we call GraphCypherQAChain with some example Cypher queries to generate a Cypher query
 #         - If its irrelevant, we let the user know that we don't support their request
 #     2. For common and uncommon Cypher query results, we pass the user request and query result to a LLM to generate the final response
-def rag_chatbot(input):
+def rag_chatbot(input, tried_fuzzy_matching = False):
     print(f"User request: {input}")
     openai = OpenAiClient()
 
@@ -56,7 +56,7 @@ def rag_chatbot(input):
 # - query_dic is a dictionary where keys are integers (question numbers) and values are query templates.
 # - USER_RESPONSE_TEMPLATE is defined for formatting the final chatbot response.
 
-# Improved handling of intent_type and query construction
+#   Common questions: Improved handling of intent_type and query construction
     else:
         common_question_number = int(intent_type[1])
         parameter_type = intent_type[2]
@@ -83,11 +83,28 @@ def rag_chatbot(input):
             Neo4j = Neo4jClient()
             result = Neo4j.execute_query(query)
             print(f"Result: {result}")
-            # Try fuzzy mathcing if no data is found
-            if len(result) == 0:
+            # If no data is found and fuzzy matching hasn't been tried yet
+            if len(result) == 0 and not tried_fuzzy_matching:
+                print("No data found, trying fuzzy matching...")
                 fuzzyMatcher = FuzzyMatching()
-                updated_user_input = fuzzyMatcher.generate_response(user_input = input, parameter_type = parameter_type)
-                rag_chatbot(updated_user_input)
+                updated_user_input = fuzzyMatcher.generate_response(user_input=input, parameter_type=parameter_type)
+            # Retry the function with updated input and mark fuzzy matching as tried
+                return rag_chatbot(input = updated_user_input, tried_fuzzy_matching=True)
+            elif len(result) == 0 and tried_fuzzy_matching:
+            # Fuzzy matching was tried and still no data found, proceed without data
+                print("Fuzzy matching tried, but still no data found. Moving on to uncommon quetsion")
+                langchain_client = LangChainClient()
+                cypher_query_response = langchain_client.run_template_generation(input)
+
+                # When no data is found, retry with input correction
+                if len(cypher_query_response[1]) == 0:
+                    input_corrector = FuzzyMatching()
+                    updated_user_input = input_corrector.generate_response(input, '')
+                    cypher_query_response = langchain_client.run_template_generation(updated_user_input) 
+                    result = cypher_query_response[1]
+            else:
+                # Data found, process it
+                print("Data found, processing...")
 
         except Exception as e:
             print(f"Error executing query in Neo4j: {e}")
@@ -103,28 +120,6 @@ def rag_chatbot(input):
             print(f"Error generating chatbot response: {e}")
             return "An error occurred while generating the chatbot response. Please try again."
 
-
-
-
-
-    # # TODO: We extract the input parameters, update the expected Cypher query, and call Neo4j directly
-    # else:
-    #     common_question_number = int(intent_type[1])
-    #     parameter1 = intent_type[2]
-    #     if intent_type[3]:
-    #         parameter2 = intent_type[3]
-    #         query = query_dic[common_question_number].format(parameter1 = parameter1, parameter2 = parameter2)
-    #     else:
-    #         query = query_dic[common_question_number].format(parameter1 = parameter1)
-    #     print(f"QUERY: {query}")
-    #     Neo4j = Neo4jClient()
-    #     result = Neo4j.execute_query(query)
-    #     print(f"Result: {result}")
-    #     # Final response generation
-    #     chatbot_response_template = USER_RESPONSE_TEMPLATE.format(query=input, cypher_query_response=result)
-    #     response = openai.generate(chatbot_response_template)
-    #     print(f"Chatbot response: {response}")
-    #     return response
 
 
 # Setup StreamLit app

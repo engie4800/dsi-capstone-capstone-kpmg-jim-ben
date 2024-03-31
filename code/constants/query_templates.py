@@ -37,3 +37,15 @@ query_dic = {
     7: ''' MATCH (rf:ReportField {{name: "{parameter1}" }})<-[:FEEDS]-(de:DataElement)
         RETURN de.generatedFrom AS GeneratedFrom'''
 }
+
+
+'''MATCH (mv1:ModelVersion {name: "Employee Productivity Model Version1"})
+        MATCH (mv2:ModelVersion {name: " Employee Productivity Model Version2"})
+        RETURN
+        mv1.name AS Version1Name,
+        mv2.name AS Version2Name,
+        {model_parameters_v1: mv1.model_parameters,
+         model_parameters_v2: mv2.model_parameters,
+            top_features_v1: mv1.top_features,
+            top_features_v2: mv2.top_features
+        } AS Differences'''

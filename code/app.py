@@ -8,7 +8,7 @@ from constants.chatbot_responses import CHATBOT_INTRO_MESSAGE, FAILED_INTENT_MAT
 from supporting.input_correction import LangChainIntegration
 from constants.db_constants import DATABASE_SCHEMA
 import logging
-
+import os
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -59,6 +59,9 @@ def rag_chatbot(input):
 # Setup StreamLit app
 def main():
     st.title("Model Metadata RAG Chatbot")
+    image_path = os.path.join(os.path.dirname(__file__), '..', 'static', 'db_schema.png')
+    #
+    st.image(image_path, caption='Database Schema')
     # Initialize chat history
     if "messages" not in st.session_state:
         st.session_state.messages = [{"role": "assistant", "content": CHATBOT_INTRO_MESSAGE}]

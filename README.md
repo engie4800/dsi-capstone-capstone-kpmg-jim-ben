@@ -116,6 +116,10 @@ TODO:
     - Intent matching
     - Uncommon cypher query generation
 
+- Run the script:
+    - one template for intent matching and parameter extraction
+    - two template solution
+
 ## Resources
 
 - OpenAI Chat Text Generation: https://platform.openai.com/docs/guides/text-generation/chat-completions-api

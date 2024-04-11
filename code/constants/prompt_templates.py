@@ -3,35 +3,41 @@ INTENT_MATCHING_TEMPLATE = """
     Step 1: determine if the user input is relevant or not based on whether it uses any words mentioned in the schema
     If it is NOT relevant, return [NONE]
 
-    If it is relevant, step 2, match user request intent to one of the following "common questions" and return the question number
-    and the parameter type.
+    If it is relevant, step 2, match user request intent to one of the following "common questions" and return the question number.
     
-    And if it doesn't match any of the following 7 questions, return [UNCOMMON]
+    And if it doesn't match any of the following 5 questions, return [UNCOMMON]
 
     Common Questions:
-    - 1. Which users have access to a specific database and what are their roles? [Parameter type: Database]
-    - 2. Which report fields will be affected if a specific column is changed? [Parameter type: Column]
-    - 3. What are the performance metrics of a specific model, and what are its data element inputs? [Parameter type: Model]
-    - 4. What data is upstream to a specific report field? [Parameter type: ReportField]
-    - 5. How many nodes upstream is the datasource for a specific report field? [Parameter type: ReportField]
-    - 6. What is the difference between two specific model versions for the specific model? [Parameter types: ModelVersion]
-    - 7. How was this report field calculated? [Parameter types: ReportField]
+    - 1. What report fields are downstream of a specific column?
+    - 2. What are the performance metrics of a specific model?
+    - 3. What data is upstream to a specific report field?
+    - 4. How many nodes upstream is the datasource for a specific report field?
+    - 5. How was this report field calculated?
+    - 6. What is the difference between the latest version and the previous version of a specific model?
     
-    Example 1 (Not relevant question):
+    Example:
     - Question: What is fastest animal in the world?
     - Answer: [NONE]
 
-    Example 2 (Relevant BUT intent not matched to questions above):
+    Example:
     - Question: What are the names of some report fields?
     - Answer: [UNCOMMON]
 
-    Example 3:
+    Example:
     - Question: How many databases are there?
     - Answer: [UNCOMMON]
 
-    Example 4 (Relevant AND intent matched to questions above):
-    - Question: What are the performance metrics of Customer Satisfaction Prediction Model, and what are its data element inputs?
-    - Answer: [COMMON,3,Model]
+    Example:
+    - Question: What are the performance metrics of Customer Satisfaction Prediction Model?
+    - Answer: [COMMON,2]
+
+    Example:
+    - Question: What data is upstream to a Top Performing Regions report field?
+    - Answer: [COMMON,3]
+
+    Example:
+    - Question: How was the Sales Confidence Interval report field calculated? 
+    - Answer: [COMMON,5]
 
     Schema:
     {schema}
@@ -39,6 +45,44 @@ INTENT_MATCHING_TEMPLATE = """
     User input is:
     {question}
 """
+
+
+INPUT_PARAMETER_EXTRACTION_TEMPLATE = """
+    Task: Given a Neo4j schema and a question, extract the single parameter from the question and return it within square brackets []
+    Only return the input parameter and its type within the square brackets
+
+    Schema:
+    {schema}
+    
+    User input is:
+    {question}
+
+    Example:
+    - Question: What report fields are downstream of the FeedbackComments column?
+    - Return [FeedbackComments,Column]
+
+    Example:
+    - Question: What are the performance metrics of Customer Satisfaction Prediction Model?
+    - Return [Customer Satisfaction Prediction Model,Model]
+
+    Example:
+    - Question: What data is upstream to the Sales Confidence Interval report field?
+    - Return [Sales Confidence Interval,ReportField]
+
+    Example:
+    - Question: How many nodes upstream is the datasource for Training Hours report field?
+    - Return [Training Hours,ReportField]
+
+    Example:
+    - Question: How was the Sales Confidence Interval report field calculated?
+    - Return [Sales Confidence Interval,ReportField]
+
+    Example:
+    - Question: What is the difference between the latest version and the previous version of the Employee Productivity Prediction Model?
+    - Return [Employee Productivity Prediction Model,Model]
+
+"""
+
 
 UNCOMMON_QUESTION_WORKFLOW_TEMPLATE = """
     Given these examples of questions and their associated Cypher query, and schema, generate the Cypher query for the user input.
@@ -51,24 +95,29 @@ UNCOMMON_QUESTION_WORKFLOW_TEMPLATE = """
     MATCH (u:User)-[:ENTITLED_ON]->(d)
     RETURN u.name AS UserName, u.role AS UserRole, u.account AS UserAccount
 
-    Question: What data is downstream of the FeedbackComments column?
+    Question: What report fields are downstream of the CustomerID column?
     Cypher Query:
-    MATCH (col:Column)-[:TRANSFORMS]->(de1:DataElement)-[:INPUT_TO]->(mv:ModelVersion)-[:PRODUCES]->(de2:DataElement)-[:FEEDS]->(rf:ReportField)
-    WHERE col.name CONTAINS "FeedbackComments"
-    RETURN rf.name AS ReportFieldName, rf.id AS ReportFieldID
+    MATCH (col:Column)
+    WHERE col.name CONTAINS "CustomerID"
+    OPTIONAL MATCH (col)-[r1]->(de1:DataElement)-[r2]->(rf1:ReportField)
+    WITH col, collect(distinct rf1) AS rf1s
+    OPTIONAL MATCH (col)-[r3]->(de2_1:DataElement)-[r4]->(mv:ModelVersion)-[r5]->(de2_2:DataElement)-[r6]->(rf2:ReportField)
+    WITH col, rf1s, collect(distinct rf2) AS rf2s
+    WITH col, rf1s + rf2s AS allRfs
+    UNWIND allRfs AS rf
+    WITH col, rf
+    RETURN col.name AS column, collect(distinct rf.name) AS AffectedReportFields
 
-    Question: What are the performance metrics of Customer Satisfaction Prediction Model, and what are its data element inputs?
+    Question: What are the performance metrics of Employee Productivity Prediction Model?
     Cypher Query:
-    MATCH (m:Model)-[:LATEST_VERSION]->(mv)
-    WHERE m.name CONTAINS "Customer Satisfaction Prediction Model"
-    WITH mv.name AS latestVersionName
-    MATCH (de:DataElement)-[:INPUT_TO]->(mv)
-    WHERE mv.name = latestVersionName
-    RETURN mv.performance_metrics AS PerformanceMetrics, COLLECT(de.name) AS InputDataElements
+    MATCH (m:Model)
+    WHERE m.name CONTAINS "Employee Productivity Prediction Model"
+    MATCH (m)-[r1:LATEST_VERSION]->(mv1:ModelVersion)
+    RETURN mv1.performance_metrics AS performance_metrics
 
-    Question: What data is upstream to the Sales Confidence Interval report field?
+    Question: What data is upstream to the Top Expense Categories report field?
     Cypher Query:
-    MATCH (rf:ReportField {{name: "Sales Confidence Interval"}})
+    MATCH (rf:ReportField {{name: "Top Expense Categories"}})
     OPTIONAL MATCH (rf)<-[:FEEDS]-(de1:DataElement)<-[:TRANSFORMS]-(col1:Column)-[r1]-(t1:Table)
     WITH rf, de1, collect(DISTINCT col1.name) AS cols1
     OPTIONAL MATCH (rf)<-[:FEEDS]-(de2_1:DataElement)<-[:PRODUCES]-(mv:ModelVersion)<-[:INPUT_TO]-(de2_2:DataElement)<-[:TRANSFORMS]-(col2:Column)-[r2]-(t2:Table)
@@ -81,13 +130,13 @@ UNCOMMON_QUESTION_WORKFLOW_TEMPLATE = """
     de2_2s
     RETURN {{
     ReportField: rf.name,
-    Feed_DataElement: de,
+    DataElement_FeedReportField: de,
     ModelVersion: mv.name,
-    Model_Input_DataElement: de2_2s,
+    DataElement_ModelInput: de2_2s,
     Column: cols
     }} AS result
 
-    Question: How many nodes upstream is the datasource for Performance History report field?
+    Question: How many nodes upstream is the datasource for Training Hours report field?
     Cypher Query:
     MATCH (rf:ReportField {{name: "Training Hours"}})
     OPTIONAL MATCH (rf)<-[:FEEDS]-(de1:DataElement)<-[:TRANSFORMS]-(col1:Column)
@@ -100,19 +149,24 @@ UNCOMMON_QUESTION_WORKFLOW_TEMPLATE = """
     END AS numberOfSteps
     RETURN DISTINCT numberOfSteps
 
-    Question: What is the difference between model versions 1 and 2 for the Employee Productivity Model?
+    Question: What is the difference between the latest version and the previous version of the Employee Productivity Prediction Model?
     Cypher Query:
-    MATCH (mv1:ModelVersion {{name: "Employee Productivity Model Version1"}})
-    MATCH (mv2:ModelVersion {{name: "Employee Productivity Model Version2"}})
+    MATCH (m:Model)
+    WHERE m.name CONTAINS "Employee Productivity Prediction Model"
+    MATCH (m)-[r1:LATEST_VERSION]->(mv1:ModelVersion)
+    MATCH (m)-[r2]->(mv2:ModelVersion)
+    WHERE mv2.version = mv1.version-1
     RETURN
-    mv1.name AS Version1Name,
-    mv2.name AS Version2Name,
+    mv1.name AS LatestVersion_v1,
+    mv2.name AS PreviousVersion_v2,
     {{
     model_parameters_v1: mv1.model_parameters,
     model_parameters_v2: mv2.model_parameters
     }} AS ModelParameters,
     {{
-    top_features_v1:
+    top_features_v1: mv1.top_features,
+    top_features_v2: mv2.top_features
+    }} AS TopFeatures
 
     Question: How was the Sales Confidence Interval report field calculated?
     Cypher Query:

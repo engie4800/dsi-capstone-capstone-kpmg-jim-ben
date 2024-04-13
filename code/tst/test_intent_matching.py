@@ -1,5 +1,5 @@
 import pandas as pd
-
+import time
 import sys
 import os
 
@@ -21,17 +21,16 @@ def test_intent_matching(filename):
     total_irrelevant_questions = 4
 
     for index, row in data.iterrows():
-        total_questions += 1
         question = row['Questions']
         expected_intent_type = row['Type']
         print(f"Question: {question}")
-        print(f"Intent Type: {expected_intent_type}\n")
+        print(f"Expected Intent Type: {expected_intent_type}\n")
 
         openai = OpenAiClient()
         response = get_request_intent(question, openai)
 
         actual_intent_type = response[0] if response else "FAILED_INTENT_MATCH"
-
+        print(f"Actual Intent Type: {actual_intent_type}")
 
         if actual_intent_type == expected_intent_type:
             overall_correct += 1
@@ -42,6 +41,8 @@ def test_intent_matching(filename):
             elif actual_intent_type == "NONE":
                 none_correct += 1
 
+        time.sleep(2)
+        print("===============================")
 
     overall_accuracy = round(overall_correct / total_questions, 2)
     common_accuracy = round(common_correct / total_common_questions, 2)

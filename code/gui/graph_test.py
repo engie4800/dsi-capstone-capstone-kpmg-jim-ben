@@ -33,17 +33,27 @@ color_dict = {
 }
 
 # Generate cypher query for each question
+# sample question: 
+# V 1. What report fields are downstream of a specific column?
+# X 2. What are the performance metrics of a specific model?
+# V 3. What data is upstream to a specific report field?
+# V 4. How many nodes upstream is the datasource for a specific report field?
+# X 5. How was this report field calculated?
+# V 6. What is the difference between the latest version and the previous version of a specific model?
 def generate_cypher_query(question_idx, parameters):
-    # User-Database Question
+    # Downstream question
     if question_idx == 1:
         query = f"""
-                MATCH (d:Database)
-                WHERE d.name CONTAINS "{parameters}"
-                MATCH (u:User)-[r:ENTITLED_ON]->(d)
-                RETURN u, d, r
+                MATCH (col:Column)
+                WHERE col.name CONTAINS "{parameters}"
+                OPTIONAL MATCH (col)-[r1]->(de1:DataElement)-[r2]->(rf1:ReportField)
+                WITH col, r1, collect(distinct de1) AS de1s, r2, rf1
+                OPTIONAL MATCH (col)-[r3]->(de2_1:DataElement)-[r4]->(mv:ModelVersion)-[r5]->(de2_2:DataElement)-[r6]->(rf2:ReportField)
+                WITH col, r1, de1s, r2, rf1, r3, collect(distinct de2_1) AS de2_1s, mv, collect(distinct de2_2) AS de2_2s, r4, r5, r6, rf2
+                RETURN col, rf1, rf2, r1, r2, r3, r4, r5, r6
                 """
     # Upstream question
-    elif question_idx == 4 or question_idx == 5:
+    elif question_idx == 3 or question_idx == 4:
         query = f"""
                 MATCH (rf:ReportField)
                 WHERE rf.name CONTAINS "{parameters}"
@@ -87,10 +97,10 @@ def generate_cypher_query(question_idx, parameters):
 def fetch_graph_data(question_idx, parameters):
     query = generate_cypher_query(question_idx, parameters)
     function = {
+        3: upstream_schema,
         4: upstream_schema,
-        5: upstream_schema,
         6: general_fetch_schema,
-        1: general_fetch_schema,
+        1: downstream_schema,
         7: high_level_schema,
     }
     schema_function = function.get(question_idx, None)
@@ -124,7 +134,7 @@ def general_fetch_schema(result):
                 start_node_name = item.nodes[0]['name']
                 end_node_name = item.nodes[1]['name']
                 edges.append(Edge(source=start_node_name, target=end_node_name, label=item.type))
-    print(f"nodes: {nodes}, edges: {edges}")
+    #print(f"nodes: {nodes}, edges: {edges}")
     return nodes, edges
 
 def upstream_schema(result):
@@ -155,7 +165,39 @@ def upstream_schema(result):
                     node_names.add(node_name)
 
             
-    print(f"nodes: {nodes}, edges: {edges}")
+    #print(f"nodes: {nodes}, edges: {edges}")
+    return nodes, edges
+
+def downstream_schema(result):
+    nodes = []
+    edges = []
+    node_names = set()
+    
+
+    for record in result:
+        column_node = None
+        report_field_nodes = []
+
+        for key, item in record.items():
+            if isinstance(item, neo4j.graph.Node):
+                node_name = item['name']
+                if node_name not in node_names:
+                    node_type = list(item.labels)[0]
+                    node_color = color_dict.get(node_type, color_dict['default'])
+                    nodes.append(Node(id=node_name, label=wrap_label(node_name), color=node_color, size=20))
+                    node_names.add(node_name)
+
+                # Check if the node is a 'Column' or 'ReportField' node
+                if 'Column' in item.labels:
+                    column_node = item
+                elif 'ReportField' in item.labels:
+                    report_field_nodes.append(item)
+
+        # Create "affect" edges between the 'Column' node and each 'ReportField' node
+        if column_node is not None:
+            for rf_node in report_field_nodes:
+                edges.append(Edge(source=column_node['name'], target=rf_node['name'], label='downstream'))
+
     return nodes, edges
 
 def high_level_schema(result):
@@ -185,21 +227,31 @@ def high_level_schema(result):
     return nodes, edges
 
 # Testing variables(question_idx, parameter)
-# 1, "IT_Database"
-# 4, "Top Expense Categories"
-# 5, "Predicted Productivity Score"
+# 1, "FeedbackComments", 1, "AccountBalance"
+# 3, "Top Expense Categories"
+# 4, "Predicted Productivity Score"
 # 6, "Employee Productivity Prediction Model"
-# 7, ""
-nodes, edges = fetch_graph_data(5, "Predicted Productivity Score")
-#print(f"nodes: {nodes}, edges: {edges}")
+question_idx, parameters = 3, "Top Expense Categories"
+nodes, edges = fetch_graph_data(question_idx, parameters)
+
+# agraph function
+
 if nodes and edges:
     config = Config(width=800, 
                     height=600, 
                     directed=True, 
                     nodeHighlightBehavior=True, 
-                    staticGraphWithDragAndDrop=False,
-                    hierarchical=True
-                    )
+                    hierarchical=True, 
+                    staticGraphWithDragAndDrop=True,
+                    physics={
+                        "enabled": True
+                    },
+                    layout={"hierarchical":{
+                        "levelSeparation": 180,
+                        "nodeSpacing": 150,
+                        "sortMethod": 'directed'
+                    }}
+            )
     agraph(nodes=nodes, edges=edges, config=config)
 else:
     st.write("No nodes to display.")

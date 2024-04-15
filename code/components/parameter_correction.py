@@ -38,17 +38,18 @@ class ParameterCorrection:
         print(f"Fetched relevant node names: {names_list}")
 
         system_template ='''You are an English word fuzzy matcing expert. First, you need to understand the user_input and find out the key_words in the input.
-                            Next, find the closest word matched with key_words in the database_nodes:{database_nodes} and return it.
+                            Next, find the closest word matched with key_words in the database_nodes:{database_nodes},
+                            return it and replace it within the original input with a '|' in between. The following are examples:
 
                             Example: 
-                                - Input: toP_PerfoEmin_Regions
-                                - Output: [Top Performing Regions]
+                                - Input: What data is upstream to a toP_PerfoEmin_Regions report field?
+                                - Output: [Top Performing Regions|What data is upstream to a Top Performing Regions report field?]
                             Example:
-                                - Input: IT Database
-                                - Output: [IT_Database]
+                                - Input: Which users have access to the IT Database and what are their roles?
+                                - Output: [IT_Database|Which users have access to the IT_Database and what are their roles?]
                             Example:
                                 - Input: Which report fields will be affected if Fedback_Comments is changed?
-                                - Output: [FeedbackComments]
+                                - Output: [FeedbackComments|Which report fields will be affected if FeedbackComments is changed?]
                             '''
                             
         system_message_prompt = SystemMessagePromptTemplate.from_template(system_template)
@@ -74,11 +75,9 @@ class ParameterCorrection:
 
         # match = re.search(r'\[(.*?)\]', response.content)
         cleaned_str = response.content.strip("[]").replace("'", "")
-        return cleaned_str
+        return cleaned_str.split("|")
 
-# if __name__ == "__main__":
-#     langchain_integration = LangChainIntegration()
-
-#     user_input = "What model versions are upstream to the predicted_satisfaction_score report field?"
-#     response = langchain_integration.generate_response(user_input,parameter_type='ReportField')
-#     print(response)
+if __name__ == "__main__":
+    parameter_correction = ParameterCorrection()
+    output = parameter_correction.generate_response("What data is upstream to a Fedback_Comments report field?", "ReportField")
+    print(f"OUTPUT: {output}")

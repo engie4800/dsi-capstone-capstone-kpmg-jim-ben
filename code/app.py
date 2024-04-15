@@ -96,14 +96,16 @@ def execute_common_query(openai, user_input, question_id):
         # If query execution fails, attempt to correct input parameter
         if len(cypher_query_response) == 0:
             input_corrector = ParameterCorrection()
-            corrected_input_parameter = input_corrector.generate_response(user_input, input_parameter_type)
+            corrected_input_response = input_corrector.generate_response(user_input, input_parameter_type)
+            corrected_input_parameter, corrected_input = corrected_input_response[0], corrected_input_response[1]
             corrected_cypher_query = neo4j.generate_common_cypher_query(question_id, corrected_input_parameter)
             cypher_query_response = neo4j.execute_query(corrected_cypher_query)
 
             # If corrected query fails, we call LangChain
+            # TODO: Update the user_input with the corrected_input_parameter
             if len(cypher_query_response) == 0:
                 langchain_client = LangChainClient()
-                cypher_query_response = langchain_client.run_template_generation(user_input)
+                cypher_query_response = langchain_client.run_template_generation(corrected_input)
 
     except Exception as e:
         print(f"Error executing query in Neo4j: {e}")

@@ -1,11 +1,13 @@
 INTENT_MATCHING_TEMPLATE = """
     Task: 
     Step 1: determine if the user input is relevant or not based on whether it uses any words mentioned in the schema
-    If it is NOT relevant, return [NONE]
+    If it is NOT relevant, return [NONE,-1]
 
     If it is relevant, step 2, match user request intent to one of the following "common questions" and return the question number.
     
-    And if it doesn't match any of the following 5 questions, return [UNCOMMON]
+    And if it doesn't match any of the following 5 questions, return [UNCOMMON,0]
+
+    Make sure ONLY return [COMMON,Integer], [UNCOMMON,0] or [NONE,-1]!!!!!
 
     Common Questions:
     - 1. What report fields are downstream of a specific column?
@@ -14,18 +16,28 @@ INTENT_MATCHING_TEMPLATE = """
     - 4. How many nodes upstream is the datasource for a specific report field?
     - 5. How was this report field calculated?
     - 6. What is the difference between the latest version and the previous version of a specific model?
+
+    Some example for uncommon Questions:
+    - 0. What is the database type of the ExecutiveManagementDatabase?
+    - 0. What are the columns in the Departments table of the ExecutiveManagementDatabase?
+    - 0. Which models have an accuracy metric above 85%?
+    - 0. How is Net Cash Flow calculated in the Financial Health Dashboard?
+    - 0. What are the column data types in the Accounts table of the FinanceAndAccountingDatabase?
+    - 0. How is Sales by Product Category calculated in the Sales Performance Dashboard?
+    - 0. What input data elements are required for Financial Health Model Version 3?
+    - 0. What access does data.scientist@company.com have in the Customer Satisfaction Survey Analysis report?
     
     Example:
     - Question: What is fastest animal in the world?
-    - Answer: [NONE]
+    - Answer: [NONE,-1]
 
     Example:
-    - Question: What are the names of some report fields?
-    - Answer: [UNCOMMON]
+    - Question: What are the SARIMA model parameters in Inventory Management Model Version 1?
+    - Answer: [UNCOMMON,0]
 
     Example:
-    - Question: How many databases are there?
-    - Answer: [UNCOMMON]
+    - Question: Which business group is linked to the Employee Productivity Report?
+    - Answer: [UNCOMMON,0]
 
     Example:
     - Question: What are the performance metrics of Customer Satisfaction Prediction Model?
@@ -181,9 +193,8 @@ UNCOMMON_QUESTION_WORKFLOW_TEMPLATE = """
 """
 
 USER_RESPONSE_TEMPLATE = """
-    Given this user input: {query}
+    Given this user question: {query}
     And data from the Neo4j database: {cypher_query_response}
 
-    Task: Generate a brief response to the user input
-    Note: Only mention the answer to the user input, no details about the database
+    Task: Answer the user question using the data from the database
 """

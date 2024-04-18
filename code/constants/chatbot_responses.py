@@ -5,6 +5,7 @@ Here are some common questions asked:
 - What are the performance metrics of Customer Satisfaction Prediction Model?
 - What data is upstream to the Sales Confidence Interval report field?
 - How was the Sales Confidence Interval report field calculated?
+- What is the difference between the latest version and the previous version of the Employee Productivity Prediction Model?
 """
 
 FAILED_INTENT_MATCH = """
@@ -25,5 +26,5 @@ Error occurred when fetching the requested data, please try again.
 """
 
 NO_RESULTS_FOUND = """
-No data was found for your result.
+No data was found for your request. Please ask another question.
 """

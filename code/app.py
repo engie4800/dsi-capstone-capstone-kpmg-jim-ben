@@ -50,11 +50,10 @@ def rag_chatbot(user_input):
     # Final response generation
     if error_occurred:
         return cypher_query_response
-    if len(cypher_query_response) > 1 and len(cypher_query_response[1]["context"]) == 0:
+    if len(cypher_query_response) == 0 or (len(cypher_query_response) > 1 and "context" in cypher_query_response[1] and len(cypher_query_response[1]["context"]) == 0):
         return NO_RESULTS_FOUND
 
-    chatbot_response_template = USER_RESPONSE_TEMPLATE.format(query=user_input, cypher_query_response=cypher_query_response)
-    response = openai.generate(chatbot_response_template)
+    response = generate_final_output(openai, user_input, cypher_query_response)
     return response
 
 def execute_uncommon_query(user_input):
@@ -113,6 +112,12 @@ def execute_common_query(openai, user_input, question_id):
         error_occurred = True
 
     return { 'cypher_query_response': cypher_query_response, 'error_occurred': error_occurred}
+
+# Given the user question and data, calling LLM to create chatbot's final response
+def generate_final_output(openai, user_input, cypher_query_response):
+    chatbot_response_template = USER_RESPONSE_TEMPLATE.format(query=user_input, cypher_query_response=cypher_query_response)
+    response = openai.generate(chatbot_response_template)
+    return response
 
 # Setup StreamLit app
 def main():

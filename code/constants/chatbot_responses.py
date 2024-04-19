@@ -5,6 +5,8 @@ Here are some common questions asked:
 - What are the performance metrics of Customer Satisfaction Prediction Model?
 - What data is upstream to the Sales Confidence Interval report field?
 - How was the Sales Confidence Interval report field calculated?
+- What report fields are downstream of FeedbackComments?
+- What is the difference between the latest version and the previous version of Employee Productivity Prediction Model?
 """
 
 FAILED_INTENT_MATCH = """

@@ -183,7 +183,6 @@ UNCOMMON_QUESTION_WORKFLOW_TEMPLATE = """
 USER_RESPONSE_TEMPLATE = """
     Given this user input: {query}
     And data from the Neo4j database: {cypher_query_response}
-
-    Task: Generate a brief response to the user input
-    Note: Only mention the answer to the user input, no details about the database
+    Task: Generate a response to the user input
+    
 """

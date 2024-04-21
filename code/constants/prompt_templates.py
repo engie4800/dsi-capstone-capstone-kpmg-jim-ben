@@ -16,16 +16,16 @@ INTENT_MATCHING_TEMPLATE = """
     - 4. How many nodes upstream is the datasource for a specific report field?
     - 5. How was this report field calculated?
     - 6. What is the difference between the latest version and the previous version of a specific model?
-
+    - 7. What are the top features of a specific model?
+    - 8. Can you tell me more about a specific model?
+    
     Some example for uncommon Questions:
-    - 0. What is the database type of the ExecutiveManagementDatabase?
-    - 0. What are the columns in the Departments table of the ExecutiveManagementDatabase?
-    - 0. Which models have an accuracy metric above 85%?
-    - 0. How is Net Cash Flow calculated in the Financial Health Dashboard?
-    - 0. What are the column data types in the Accounts table of the FinanceAndAccountingDatabase?
-    - 0. How is Sales by Product Category calculated in the Sales Performance Dashboard?
-    - 0. What input data elements are required for Financial Health Model Version 3?
-    - 0. What access does data.scientist@company.com have in the Customer Satisfaction Survey Analysis report?
+    - 0. What is the database type of a specific database?
+    - 0. What are the columns in the Departments table of a specific database?
+    - 0. Which model versions have an accuracy metric above 85%?
+    - 0. What are the parameters of a specific model version?
+    - 0. What are the column data types in a specific table in a database?
+    - 0. Which users have access to a specific report?
     
     Example:
     - Question: What is fastest animal in the world?
@@ -69,7 +69,7 @@ INPUT_PARAMETER_EXTRACTION_TEMPLATE = """
     User input is:
     {question}
 
-    Example:
+     Example:
     - Question: What report fields are downstream of the FeedbackComments column?
     - Return [FeedbackComments,Column]
 
@@ -92,6 +92,16 @@ INPUT_PARAMETER_EXTRACTION_TEMPLATE = """
     Example:
     - Question: What is the difference between the latest version and the previous version of the Employee Productivity Prediction Model?
     - Return [Employee Productivity Prediction Model,Model]
+
+    Clarification of task: If a question contains both a report field parameter and a report parameter, only return the report field parameter.  Here are a couple of examples:
+    
+    Example:
+    - Question: Which data sources are upstream to the Predicted Demand for Products field in the Inventory Management Report?
+    - Return [Predicted Demand for Products,ReportField]
+
+    Example:
+    - Question: Which data elements feed into the Average Productivity by Department field in the Employee Productivity Report?
+    - Return [Average Productivity by Department,ReportField]
 
 """
 
@@ -196,5 +206,22 @@ USER_RESPONSE_TEMPLATE = """
     Given this user question: {query}
     And data from the Neo4j database: {cypher_query_response}
 
-    Task: Answer the user question using the data from the database
+    Task: Answer the user question using only the data from the Neo4j database.  Use nested bullet points to summarize the answer if longer than one sentence.
+
+    Example short answer response: The datasource for the Monthly Sales Trend field is 2 nodes upstream.
+    
+    Example of long answer response:
+
+    The main differences between the latest version (Employee Productivity Model Version3) and the previous version (Employee Productivity Model Version2) of the Employee Productivity Prediction Model are as follows:
+    
+    1. Model Parameters:
+        - Version3: Decision Tree algorithm with a maximum depth of 8 and a minimum samples split of 4.
+        - Version2: Random Forest algorithm with 100 trees, a maximum depth of 10, and a minimum samples split of 2.
+
+    2. Top Features:
+        - Version3: The top features considered in Version3 are PerformanceScore (0.55), PerformanceReviewDate (0.25), and EmployeeID (0.2).
+        - Version2: The top features considered in Version2 are PerformanceScore (0.4), PerformanceReviewDate (0.3), PerformanceComments (0.2), and EmployeeID (0.1).
+
+    Overall, the key differences between the two versions lie in the choice of algorithm used, the parameters of the algorithm, and the weightage assigned to the top features in the model.
+        
 """

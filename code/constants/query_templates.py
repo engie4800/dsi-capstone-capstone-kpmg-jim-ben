@@ -16,10 +16,11 @@ query_map = {
         MATCH (m)-[r1:LATEST_VERSION]->(mv1:ModelVersion)
         RETURN mv1.performance_metrics AS performance_metrics''',
 
-    3: '''MATCH (rf:ReportField {{name: "{parameter1}"}})
+    3: '''MATCH (rf:ReportField {name: "Sales Confidence Interval"})
         OPTIONAL MATCH (rf)<-[:FEEDS]-(de1:DataElement)<-[:TRANSFORMS]-(col1:Column)-[r1]-(t1:Table)
         WITH rf, de1, collect(DISTINCT col1.name) AS cols1
         OPTIONAL MATCH (rf)<-[:FEEDS]-(de2_1:DataElement)<-[:PRODUCES]-(mv:ModelVersion)<-[:INPUT_TO]-(de2_2:DataElement)<-[:TRANSFORMS]-(col2:Column)-[r2]-(t2:Table)
+        WHERE mv.latest_version = "True"
         WITH rf, de1, cols1, de2_1, collect(DISTINCT col2.name) AS cols2, mv, collect(DISTINCT de2_2.name) AS de2_2s
         WITH
         rf,
@@ -27,13 +28,12 @@ query_map = {
         (cols1 + cols2) AS cols,
         mv,
         de2_2s
-        RETURN {{
+        RETURN {
         ReportField: rf.name,
-        DataElement_FeedReportField: de,
         ModelVersion: mv.name,
-        DataElement_ModelInput: de2_2s,
         Column: cols
-        }} AS result''',
+        } AS result
+        ''',
 
     4: '''MATCH (rf:ReportField {{name: "{parameter1}"}})
         OPTIONAL MATCH (rf)<-[:FEEDS]-(de1:DataElement)<-[:TRANSFORMS]-(col1:Column)
@@ -56,5 +56,18 @@ query_map = {
         WHERE mv2.version = mv1.version-1
         RETURN mv1.name AS LatestVersion_v1, mv2.name AS PreviousVersion_v2,
         {{ model_parameters_v1: mv1.model_parameters, model_parameters_v2: mv2.model_parameters }} AS ModelParameters,
-        {{ top_features_v1: mv1.top_features, top_features_v2: mv2.top_features }} AS TopFeatures'''
+        {{ top_features_v1: mv1.top_features, top_features_v2: mv2.top_features }} AS TopFeatures''',
+    
+    7: '''MATCH (m:Model)
+        WHERE m.name CONTAINS "{parameter1}"
+        MATCH (m)-[:LATEST_VERSION]->(mv:ModelVersion)
+        WHERE mv.latest_version = "True"
+        RETURN mv.top_features AS Top_Features''',
+
+    8: '''MATCH (m:Model)
+        WHERE m.name CONTAINS "{parameter1}"
+        MATCH (m)-[:LATEST_VERSION]->(mv:ModelVersion)
+        WHERE mv.latest_version = "True"
+        RETURN mv.metadata AS Metadata, mv.performance_metrics AS Performance_Metrics, mv.model_parameters AS Model_Parameters, mv.top_features AS Top_Features, mv.version AS Version_Index
+'''
 }

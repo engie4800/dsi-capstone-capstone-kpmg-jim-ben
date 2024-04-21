@@ -16,7 +16,7 @@ query_map = {
         MATCH (m)-[r1:LATEST_VERSION]->(mv1:ModelVersion)
         RETURN mv1.performance_metrics AS performance_metrics''',
 
-    3: '''MATCH (rf:ReportField {name: "Sales Confidence Interval"})
+    3: '''MATCH (rf:ReportField {{name: "{parameter1}"}})
         OPTIONAL MATCH (rf)<-[:FEEDS]-(de1:DataElement)<-[:TRANSFORMS]-(col1:Column)-[r1]-(t1:Table)
         WITH rf, de1, collect(DISTINCT col1.name) AS cols1
         OPTIONAL MATCH (rf)<-[:FEEDS]-(de2_1:DataElement)<-[:PRODUCES]-(mv:ModelVersion)<-[:INPUT_TO]-(de2_2:DataElement)<-[:TRANSFORMS]-(col2:Column)-[r2]-(t2:Table)

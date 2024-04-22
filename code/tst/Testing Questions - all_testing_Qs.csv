@@ -1,4 +1,4 @@
-ID,Questions,Type,Correct Answer,Query,ParameterExtracted
+ID,Questions,Type,Correct Answer,QueryID,ParameterExtracted
 1,Which downstream fields are influenced by the AccountBalance column in the Accounts table?,COMMON,AccountBalance' influences the 'Cash Flow Trends' field in the Financial Health Dashboard.,1,AccountBalance
 2,What data elements are affected by changes in the ItemReorderLevel column in the Product Inventory table?,COMMON,"ItemReorderLevel' impacts the 'Products with Low Stock', 'Inventory Turnover Ratio' field in the Inventory Management Report.",1,ItemReorderLevel
 3,How does the PerformanceScore column in the Employee Performance table impact downstream data?,COMMON,"PerformanceScore' affects the 'Average Productivity by Department', 'Top Performers', and 'Productivity Improvement' fields in the Employee Productivity Report.",1,PerformanceScore

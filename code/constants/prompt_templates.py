@@ -19,13 +19,15 @@ INTENT_MATCHING_TEMPLATE = """
     - 7. What are the top features of a specific model?
     - 8. Can you tell me more about a specific model?
     
-    Some example for uncommon Questions:
+    Some examples of uncommon Questions:
     - 0. What is the database type of a specific database?
-    - 0. What are the columns in the Departments table of a specific database?
+    - 0. What are the columns in a specific table of a database?
     - 0. Which model versions have an accuracy metric above 85%?
     - 0. What are the parameters of a specific model version?
     - 0. What are the column data types in a specific table in a database?
     - 0. Which users have access to a specific report?
+    - 0. Who maintains a specific report?
+    - 0. Who is the owner of a specific report?
     
     Example:
     - Question: What is fastest animal in the world?

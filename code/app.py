@@ -13,6 +13,9 @@ from gui.graph_test import fetch_graph_data
 import logging
 import os
 from streamlit_agraph import agraph, Node, Edge, Config
+from streamlit_image_zoom import image_zoom
+from PIL import Image
+
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -57,7 +60,6 @@ def rag_chatbot(user_input):
                         config = Config(width=700, 
                                         height=300, 
                                         directed=True, 
-                                        maxZoom=2,
                                         nodeHighlightBehavior=True, 
                                         hierarchical=True, 
                                         staticGraphWithDragAndDrop=True,
@@ -69,6 +71,7 @@ def rag_chatbot(user_input):
                                             "nodeSpacing": 150,
                                             "sortMethod": 'directed'
                                         }}
+                                        
                                 )
                         
                         agraph(nodes=nodes, edges=edges, config=config)
@@ -150,12 +153,19 @@ def execute_common_query(openai, user_input, question_id):
     return { 'cypher_query_response': cypher_query_response, 'error_occurred': error_occurred, 
             'question_id': question_id, 'parameter_for_agraph': parameter_for_agraph}
 
+
 # Setup StreamLit app
 def main():
     # Sidebar
-    image_path = os.path.join(os.path.dirname(__file__), '..', 'static', 'visualisation-3.png')
+    image_path = os.path.join(os.path.dirname(__file__), '..', 'static', 'visualization2.png')
+    # Streamlit image_zoom
+    # image = Image.open(image_path)
+    
     with st.sidebar:
         st.image(image_path, caption='Database Schema', use_column_width="always")
+        # image_zoom(image, mode="scroll", size=(500, 700), keep_aspect_ratio=False, zoom_factor=4.0, increment=0.2)
+        # st.markdown(f'<img src="{image_path}" style="{style_image1}">',
+        #             unsafe_allow_html=True)
     st.title("Model Metadata RAG Chatbot")
     
 

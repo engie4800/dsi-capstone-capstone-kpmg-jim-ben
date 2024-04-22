@@ -69,14 +69,12 @@ def generate_cypher_query(question_idx, parameters):
                 // Aggregating the results
                 WITH
                 rf,
-                COALESCE(de1, de2_1) AS de,
                 (cols1 + cols2) AS cols,
                 mv,
-                de2_2s,
                 r1, r2, r3, r4, r5, r6, r7, r8
 
                 // Returning the results
-                RETURN rf, de, cols, mv, de2_2s, r1, r2, r3, r4, r5, r6, r7, r8
+                RETURN rf, cols, mv
                 """
     # Modelversion question
     elif question_idx == 6: 
@@ -107,7 +105,8 @@ def fetch_graph_data(question_idx, parameters):
     if query:
         with driver.session() as session:
             result = session.run(query)
-            return schema_function(result)
+            re = schema_function(result)
+            return re
 
     raise ValueError(f"Invalid question_idx: {question_idx}")
 
@@ -141,32 +140,109 @@ def upstream_schema(result):
     
     nodes = []
     edges = []
-    node_names = set()
+    node_ids = {}  # Maps neo4j Node identity to our Node id
+    node_counter = 1  # Counter to create unique ids for our nodes
 
+    node_names = set()
+    # Show all nodes
+    # for record in result:
+    #     print("record: ", record)
+    #     for item in record.values():    
+    #         if isinstance(item, neo4j.graph.Node):
+    #             items = [item]  # Wrap single Node in a list for uniform processing
+    #         elif isinstance(item, list) and all(isinstance(elem, neo4j.graph.Node) for elem in item):
+    #             items = item
+    #         elif isinstance(item, neo4j.graph.Relationship):
+    #             start_node_name = item.nodes[0]['name']
+    #             end_node_name = item.nodes[1]['name']
+    #             edges.append(Edge(source=start_node_name, target=end_node_name, label=item.type))
+    #         else:
+    #             continue
+    #         for node in items:
+    #             node_name = node['name']
+    #             if node_name not in node_names:
+    #                 node_type = list(node.labels)[0]
+    #                 node_color = color_dict.get(node_type, color_dict['default'])
+    #                 nodes.append(Node(id=node_name, label=wrap_label(node_name), color=node_color, size=20))
+    #                 node_names.add(node_name)
+    # for record in result:
+
+    #     column_node = []
+    #     model_version_node = None
+    #     report_field_nodes = None
+    #     print("record", record)
+    #     for key, item in record.items():
+            
+    #         if isinstance(item, list) and all(isinstance(elem, neo4j.graph.Node) for elem in item):
+    #             item = item[0]
+    #         print(f"item:{item}\n")
+    #         if isinstance(item, neo4j.graph.Node):
+    #             node_name = item['name']
+    #             if node_name not in node_names:
+    #                 if 'ReportField' in item.labels:
+    #                     report_field_nodes = item
+    #                     node_type = list(item.labels)[0]
+    #                     node_color = color_dict.get(node_type, color_dict['default'])
+    #                     nodes.append(Node(id=node_name, label=wrap_label(node_name), color=node_color, size=20))
+    #                     node_names.add(node_name)
+
+    #                 elif 'ModelVersion' in item.labels:
+    #                     model_version_node = item
+    #                     node_type = list(item.labels)[0]
+    #                     node_color = color_dict.get(node_type, color_dict['default'])
+    #                     nodes.append(Node(id=node_name, label=wrap_label(node_name), color=node_color, size=20))
+    #                     node_names.add(node_name)
+    #                 elif 'Column' in item.labels:
+    #                     column_node.append(item)
+    #                     node_type = list(item.labels)[0]
+    #                     node_color = color_dict.get(node_type, color_dict['default'])
+    #                     nodes.append(Node(id=node_name, label=wrap_label(node_name), color=node_color, size=20))
+    #                     node_names.add(node_name)
+
+            
+    #     # Create links
+    #     print("column node:", column_node)
+    #     if model_version_node is not None:
+    #         edges.append(Edge(source=model_version_node['name'], target=report_field_nodes['name'], label=''))
+    #         for col_node in column_node:
+    #             edges.append(Edge(source=col_node['name'], target=model_version_node['name'], label=''))
+    #     else: 
+    #         for col_node in column_node:
+    #             print("col_node:",col_node['name'], 'report field node', report_field_nodes)
+    #             edges.append(Edge(source=col_node['name'], target=report_field_nodes['name'], label=''))
     for record in result:
-        #print("record: ", record)
-        for item in record.values():    
+        #print(f"record: {record}")
+        model_version_node = None
+        report_field_nodes = None
+        col_nodes = None
+        for item in record.values():
+            #print(f"item: {item}")
+            # if it's column
+            if isinstance(item, list) and all(isinstance(elem, neo4j.graph.Node) for elem in item):
+                item = item[0]
             if isinstance(item, neo4j.graph.Node):
-                items = [item]  # Wrap single Node in a list for uniform processing
-            elif isinstance(item, list) and all(isinstance(elem, neo4j.graph.Node) for elem in item):
-                items = item
-            elif isinstance(item, neo4j.graph.Relationship):
-                start_node_name = item.nodes[0]['name']
-                end_node_name = item.nodes[1]['name']
-                edges.append(Edge(source=start_node_name, target=end_node_name, label=item.type))
-            else:
-                continue
-            for node in items:
-                node_name = node['name']
+                node_name = item['name']
+                #print(f"node name: {node_name}")
                 if node_name not in node_names:
-                    node_type = list(node.labels)[0]
+                    node_type = list(item.labels)[0]
                     node_color = color_dict.get(node_type, color_dict['default'])
                     nodes.append(Node(id=node_name, label=wrap_label(node_name), color=node_color, size=20))
                     node_names.add(node_name)
-
-            
-    #print(f"nodes: {nodes}, edges: {edges}")
+                if 'Column' in item.labels:
+                    col_nodes = item
+                elif 'ReportField' in item.labels:
+                    report_field_nodes = item
+                elif 'ModelVersion' in item.labels:
+                    model_version_node = item
+        if model_version_node is not None:
+            edges.append(Edge(source=model_version_node['name'], target=report_field_nodes['name'], label=''))
+            edges.append(Edge(source=col_nodes['name'], target=model_version_node['name'], label=''))
+        else: 
+            edges.append(Edge(source=col_nodes['name'], target=report_field_nodes['name'], label=''))
     return nodes, edges
+
+    
+            
 
 def downstream_schema(result):
     nodes = []
@@ -231,7 +307,7 @@ def high_level_schema(result):
 # 3, "Top Expense Categories"
 # 4, "Predicted Productivity Score"
 # 6, "Employee Productivity Prediction Model"
-# question_idx, parameters = 3, "Top Expense Categories"
+# question_idx, parameters = 4, "Predicted Productivity Score"
 # nodes, edges = fetch_graph_data(question_idx, parameters)
 
 # # agraph function

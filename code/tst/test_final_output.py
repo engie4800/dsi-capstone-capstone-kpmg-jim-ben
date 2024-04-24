@@ -13,8 +13,13 @@ def test_final_output(filename):
     openai = OpenAiClient()
 
     total_correct = 0
+    total_common_correct = 0
+    total_uncommon_correct = 0
+
     total_questions = 0
-    TOKEN_SET_RATIO_CORRECT_THRESHOLD = 0.7
+    total_common_questions = 0
+    total_uncommon_questions = 0
+    TOKEN_SET_RATIO_CORRECT_THRESHOLD = 70
 
     for index, row in data.iterrows():
         total_questions += 1
@@ -29,6 +34,7 @@ def test_final_output(filename):
         
 
         if intent_type == "COMMON":
+            total_common_questions += 1
             print(f"Question ID: {question_id}")
             query_response = execute_common_query(openai, question, question_id)
             print(f"Query Response: {query_response}")
@@ -56,6 +62,7 @@ def test_final_output(filename):
                 actual_final_answer = ""
 
         elif intent_type == "UNCOMMON":
+            total_uncommon_questions += 1
             fetched_data = execute_uncommon_query(question)
             actual_final_answer = generate_final_output(openai, question, fetched_data)
 
@@ -67,6 +74,11 @@ def test_final_output(filename):
 
             if token_set_ratio >= TOKEN_SET_RATIO_CORRECT_THRESHOLD:
                 total_correct += 1
+
+                if intent_type == "COMMON":
+                    total_common_correct += 1
+                elif intent_type == "UNCOMMON":
+                     total_uncommon_correct += 1
             else:
                 print(f"FAILURE: [{question}]")
         else:
@@ -75,10 +87,16 @@ def test_final_output(filename):
         print("================================\n")
         time.sleep(2)
 
+    print(total_common_correct, total_common_questions)
+    print(total_uncommon_correct, total_uncommon_questions)
     overall_accuracy = round(total_correct / total_questions, 2)
+    common_accuracy = round(total_common_correct / total_common_questions, 2)
+    uncommon_accuracy = round(total_uncommon_correct / total_uncommon_questions, 2)
+
     print("FINAL OUTPUT ACCURACY METRIC\n")
     print(f"Overall accuracy: {overall_accuracy}")
-
+    print(f"Common accuracy: {common_accuracy}")
+    print(f"Uncommmon accuracy: {uncommon_accuracy}")
 
 
 if __name__ == '__main__':

@@ -48,7 +48,10 @@ class ParameterCorrection:
                             Next, find the closest word matched with key_words in the database_nodes:{database_nodes},
                             return it and replace it within the original input with a '|' in between. The following are examples:
 
-                            Example: 
+                            Example:
+                                - Input: What are the performance metrics used in Customer Satisfaction Model Version 3?
+                                - Output: [Customer Satisfaction Model Version3|What are the performance metrics used in Customer Satisfaction Model Version3?]
+                            Example:
                                 - Input: What data is upstream to a toP_PerfoEmin_Regions report field?
                                 - Output: [Top Performing Regions|What data is upstream to a Top Performing Regions report field?]
                             Example:

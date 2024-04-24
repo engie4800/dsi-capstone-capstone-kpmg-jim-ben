@@ -69,8 +69,8 @@ def execute_uncommon_query(user_input):
             print("NOTE: No data was found from LangChain call, trying parameter correction\n")
             input_corrector = ParameterCorrection()
             updated_user_input = input_corrector.generate_response(user_input, '')
-            print(f"Retrying LangChain with corrected user input: [{updated_user_input}]")
-            cypher_query_response = langchain_client.run_template_generation(updated_user_input)
+            print(f"Retrying LangChain with corrected user input: [{updated_user_input[1]}]")
+            cypher_query_response = langchain_client.run_template_generation(updated_user_input[1])
     except Exception as e:
         print(f"ERROR: {e}")
         cypher_query_response = CYPHER_QUERY_ERROR

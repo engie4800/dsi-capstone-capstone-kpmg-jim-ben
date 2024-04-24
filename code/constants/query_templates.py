@@ -22,17 +22,8 @@ query_map = {
         OPTIONAL MATCH (rf)<-[:FEEDS]-(de2_1:DataElement)<-[:PRODUCES]-(mv:ModelVersion)<-[:INPUT_TO]-(de2_2:DataElement)<-[:TRANSFORMS]-(col2:Column)-[r2]-(t2:Table)
         WHERE mv.latest_version = "True"
         WITH rf, de1, cols1, de2_1, collect(DISTINCT col2.name) AS cols2, mv, collect(DISTINCT de2_2.name) AS de2_2s
-        WITH
-        rf,
-        COALESCE(de1.name, de2_1.name) AS de,
-        (cols1 + cols2) AS cols,
-        mv,
-        de2_2s
-        RETURN {
-        ReportField: rf.name,
-        ModelVersion: mv.name,
-        Column: cols
-        } AS result
+        WITH rf, COALESCE(de1.name, de2_1.name) AS de, (cols1 + cols2) AS cols, mv, de2_2s
+        RETURN {{ ReportField: rf.name, ModelVersion: mv.name, Column: cols }} AS result
         ''',
 
     4: '''MATCH (rf:ReportField {{name: "{parameter1}"}})

@@ -82,11 +82,11 @@ def execute_common_query(openai, user_input, question_id):
     neo4j = Neo4jClient()
     error_occurred = False
     input_parameter_response = get_input_parameter(user_input, openai)
+    print(input_parameter_response)
     extracted_input_parameter, input_parameter_type = input_parameter_response[0], input_parameter_response[1]
     
     print(f"COMMON QUERY: [{question_id}|{extracted_input_parameter}|{input_parameter_type}]")
     cypher_query = neo4j.generate_common_cypher_query(question_id, extracted_input_parameter)
-
     try:
         # Execute the query
         cypher_query_response = neo4j.execute_query(cypher_query)

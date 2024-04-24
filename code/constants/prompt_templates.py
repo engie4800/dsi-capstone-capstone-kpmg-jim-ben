@@ -17,9 +17,10 @@ INTENT_MATCHING_TEMPLATE = """
     - 5. How was this report field calculated?
     - 6. What is the difference between the latest version and the previous version of a specific model?
     - 7. What are the top features of a specific model?
-    - 8. Can you tell me more about a specific model?
+    - 8. Tell me about the latest version of a specific model?
     
     Some examples of uncommon Questions:
+    - 0. How many report fields are there?
     - 0. What is the database type of a specific database?
     - 0. What are the columns in a specific table of a database?
     - 0. Which model versions have an accuracy metric above 85%?
@@ -50,8 +51,12 @@ INTENT_MATCHING_TEMPLATE = """
     - Answer: [COMMON,3]
 
     Example:
-    - Question: How was the Sales Confidence Interval report field calculated? 
-    - Answer: [COMMON,5]
+    - Question: What are the top features of a Customer Satisfaction Prediction Model?
+    - Answer: [COMMON,7]
+
+    Example:
+    - Question: Tell me about the latest version of the Customer Satisfaction Prediction Model?
+    - Answer: [COMMON,8]
 
     Schema:
     {schema}

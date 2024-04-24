@@ -8,7 +8,7 @@ from clients.openai_client import OpenAiClient
 from components.intent_matching import get_request_intent
 
 def test_intent_matching(filename):
-    data = pd.read_csv(filename, delimiter=';')
+    data = pd.read_csv(filename, delimiter=',')
 
     total_questions = 0
     total_common_questions = 0
@@ -77,5 +77,5 @@ def test_intent_matching(filename):
 
 
 if __name__ == '__main__':
-    filename = "testing_data.csv"
+    filename = "Testing Questions - all_testing_Qs.csv"
     test_intent_matching(filename)

@@ -5,7 +5,6 @@ from clients.langchain_client import LangChainClient
 from components.intent_matching import get_input_parameter, get_request_intent
 from constants.prompt_templates import USER_RESPONSE_TEMPLATE, INTENT_MATCHING_TEMPLATE
 from constants.chatbot_responses import CHATBOT_INTRO_MESSAGE, FAILED_INTENT_MATCH, CYPHER_QUERY_ERROR, NOT_RELEVANT_USER_REQUEST, NO_RESULTS_FOUND
-from supporting.input_correction import LangChainIntegration
 from constants.db_constants import DATABASE_SCHEMA
 from constants.query_templates import query_map
 from components.parameter_correction import ParameterCorrection
@@ -66,9 +65,11 @@ def execute_uncommon_query(user_input):
         cypher_query_response = langchain_client.run_template_generation(user_input)
 
         # If no data is found, retry with input correction
-        if len(cypher_query_response[1]) == 0:
-            input_corrector = LangChainIntegration()
-            updated_user_input = input_corrector.generate_response(input, '')
+        if len(cypher_query_response[1]["context"]) == 0:
+            print("NOTE: No data was found from LangChain call, trying parameter correction\n")
+            input_corrector = ParameterCorrection()
+            updated_user_input = input_corrector.generate_response(user_input, '')
+            print(f"Retrying LangChain with corrected user input: [{updated_user_input}]")
             cypher_query_response = langchain_client.run_template_generation(updated_user_input)
     except Exception as e:
         print(f"ERROR: {e}")
@@ -101,7 +102,6 @@ def execute_common_query(openai, user_input, question_id):
             cypher_query_response = neo4j.execute_query(corrected_cypher_query)
 
             # If corrected query fails, we call LangChain
-            # TODO: Update the user_input with the corrected_input_parameter
             if len(cypher_query_response) == 0:
                 langchain_client = LangChainClient()
                 cypher_query_response = langchain_client.run_template_generation(corrected_input)

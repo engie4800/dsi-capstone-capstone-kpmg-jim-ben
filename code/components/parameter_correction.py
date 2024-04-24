@@ -32,7 +32,14 @@ class ParameterCorrection:
         return names
 
     def generate_response(self, user_input, parameter_type):
-        query = f"MATCH (n:{parameter_type}) RETURN n"
+
+        print("========================PARAMETER CORRECTION========================\n")
+
+        if parameter_type:
+            query = f"MATCH (n:{parameter_type}) RETURN n"
+        else:
+            query = "MATCH (n) RETURN n"
+
         result = self.neo4j_graph.query(query)
         names_list = self.extract_names_from_result(result=result)
         print(f"Fetched relevant node names: {names_list}")
@@ -65,15 +72,9 @@ class ParameterCorrection:
 
         chat = ChatOpenAI(openai_api_key=self.openai_api_key)
         response = chat(request)
-        print('========Original User Input=================')
-        print(user_input)
-    
+        print(f'\nOriginal User Input: [{user_input}]')
+        print(f'Corrected User Input: [{response.content}]')
 
-        print('========Fixed User Input====================')
-        print(response.content)
-        print(' ')
-
-        # match = re.search(r'\[(.*?)\]', response.content)
         cleaned_str = response.content.strip("[]").replace("'", "")
         return cleaned_str.split("|")
 

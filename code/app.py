@@ -8,7 +8,13 @@ from constants.chatbot_responses import CHATBOT_INTRO_MESSAGE, FAILED_INTENT_MAT
 from constants.db_constants import DATABASE_SCHEMA
 from constants.query_templates import query_map
 from components.parameter_correction import ParameterCorrection
+from gui.graph_test import fetch_graph_data
 import logging
+import os
+from streamlit_agraph import agraph, Node, Edge, Config
+from streamlit_image_zoom import image_zoom
+from PIL import Image
+
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -24,7 +30,7 @@ def rag_chatbot(user_input):
     print(f"User request: {user_input}")
     openai = OpenAiClient()
     error_occurred = False
-
+    agraph_stuff = {}
     # Get user request intent
     get_request_intent_response = get_request_intent(user_input, openai)
     intent_type = get_request_intent_response[0]
@@ -43,6 +49,37 @@ def rag_chatbot(user_input):
             question_id = int(get_request_intent_response[1])
             common_query_response = execute_common_query(openai, user_input, question_id)
             cypher_query_response, error_occurred = common_query_response['cypher_query_response'], common_query_response['error_occurred']
+            # Get question_id and parameter for agraph
+            question_id, parameter_for_agraph= common_query_response['question_id'], common_query_response['parameter_for_agraph']
+            # Create agraph
+            if parameter_for_agraph != '':
+                if question_id in [1,3,4,6]:
+                    nodes, edges = fetch_graph_data(question_id, parameter_for_agraph)
+                    if nodes and edges:
+                        config = Config(width=700, 
+                                        height=300, 
+                                        directed=True, 
+                                        nodeHighlightBehavior=True, 
+                                        hierarchical=True, 
+                                        staticGraphWithDragAndDrop=True,
+                                        physics={
+                                            "enabled": True
+                                        },
+                                        layout={"hierarchical":{
+                                            "levelSeparation": 180,
+                                            "nodeSpacing": 150,
+                                            "sortMethod": 'directed'
+                                        }}
+                                        
+                                )
+                        
+                        agraph(nodes=nodes, edges=edges, config=config)
+                        
+                    else:
+                        st.write("No nodes to display.")
+
+
+
     else:
         return FAILED_INTENT_MATCH
 
@@ -85,6 +122,8 @@ def execute_common_query(openai, user_input, question_id):
     input_parameter_response = get_input_parameter(user_input, openai)
     print(input_parameter_response)
     extracted_input_parameter, input_parameter_type = input_parameter_response[0], input_parameter_response[1]
+    # agraph path variable
+    parameter_for_agraph = extracted_input_parameter
     
     print(f"COMMON QUERY: [{question_id}|{extracted_input_parameter}|{input_parameter_type}]")
     cypher_query = neo4j.generate_common_cypher_query(question_id, extracted_input_parameter)
@@ -100,18 +139,21 @@ def execute_common_query(openai, user_input, question_id):
             corrected_input_parameter, corrected_input = corrected_input_response[0], corrected_input_response[1]
             corrected_cypher_query = neo4j.generate_common_cypher_query(question_id, corrected_input_parameter)
             cypher_query_response = neo4j.execute_query(corrected_cypher_query)
-
+            parameter_for_agraph = corrected_input_parameter
             # If corrected query fails, we call LangChain
             if len(cypher_query_response) == 0:
                 langchain_client = LangChainClient()
                 cypher_query_response = langchain_client.run_template_generation(corrected_input)
+                parameter_for_agraph = ''
 
     except Exception as e:
         print(f"Error executing query in Neo4j: {e}")
         cypher_query_response = "An error occurred while executing the query. Please try again."
         error_occurred = True
 
-    return { 'cypher_query_response': cypher_query_response, 'error_occurred': error_occurred}
+    return { 'cypher_query_response': cypher_query_response, 'error_occurred': error_occurred, 
+            'question_id': question_id, 'parameter_for_agraph': parameter_for_agraph}
+
 
 # Given the user question and data, calling LLM to create chatbot's final response
 def generate_final_output(openai, user_input, cypher_query_response):
@@ -121,7 +163,19 @@ def generate_final_output(openai, user_input, cypher_query_response):
 
 # Setup StreamLit app
 def main():
+    # Sidebar
+    image_path = os.path.join(os.path.dirname(__file__), '..', 'static', 'visualization2.png')
+    # Streamlit image_zoom
+    # image = Image.open(image_path)
+    
+    with st.sidebar:
+        st.image(image_path, caption='Database Schema', use_column_width="always")
+        # image_zoom(image, mode="scroll", size=(500, 700), keep_aspect_ratio=False, zoom_factor=4.0, increment=0.2)
+        # st.markdown(f'<img src="{image_path}" style="{style_image1}">',
+        #             unsafe_allow_html=True)
     st.title("Model Metadata RAG Chatbot")
+    
+
     # Initialize chat history
     if "messages" not in st.session_state:
         st.session_state.messages = [{"role": "assistant", "content": CHATBOT_INTRO_MESSAGE}]
@@ -140,14 +194,15 @@ def main():
 
         # Call RAG chatbot
         logging.info("Started request execution")
-        response = rag_chatbot(prompt)
+        response, agraph_stuff = rag_chatbot(prompt)
         logging.info("Finished request execution")
 
+       
         # Display chatbot response in chat message container
         with st.chat_message("assistant"):
             st.markdown(response)
+
         st.session_state.messages.append({"role": "assistant", "content": response})
-
-
+        
 if __name__ == '__main__':
     main()

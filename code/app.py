@@ -90,7 +90,7 @@ def rag_chatbot(user_input):
         return NO_RESULTS_FOUND
 
     response = generate_final_output(openai, user_input, cypher_query_response)
-    return response
+    return response, agraph_stuff
 
 def execute_uncommon_query(user_input):
     langchain_client = LangChainClient()

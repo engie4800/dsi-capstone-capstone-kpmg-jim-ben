@@ -5,7 +5,6 @@ from clients.langchain_client import LangChainClient
 from components.intent_matching import get_input_parameter, get_request_intent
 from constants.prompt_templates import USER_RESPONSE_TEMPLATE, INTENT_MATCHING_TEMPLATE
 from constants.chatbot_responses import CHATBOT_INTRO_MESSAGE, FAILED_INTENT_MATCH, CYPHER_QUERY_ERROR, NOT_RELEVANT_USER_REQUEST, NO_RESULTS_FOUND
-from supporting.input_correction import LangChainIntegration
 from constants.db_constants import DATABASE_SCHEMA
 from constants.query_templates import query_map
 from components.parameter_correction import ParameterCorrection
@@ -87,12 +86,11 @@ def rag_chatbot(user_input):
     # Final response generation
     if error_occurred:
         return cypher_query_response
-    if len(cypher_query_response) == 0:
+    if len(cypher_query_response) == 0 or (len(cypher_query_response) > 1 and "context" in cypher_query_response[1] and len(cypher_query_response[1]["context"]) == 0):
         return NO_RESULTS_FOUND
 
-    chatbot_response_template = USER_RESPONSE_TEMPLATE.format(query=user_input, cypher_query_response=cypher_query_response)
-    response = openai.generate(chatbot_response_template)
-    return response, agraph_stuff
+    response = generate_final_output(openai, user_input, cypher_query_response)
+    return response
 
 def execute_uncommon_query(user_input):
     langchain_client = LangChainClient()
@@ -104,10 +102,12 @@ def execute_uncommon_query(user_input):
         cypher_query_response = langchain_client.run_template_generation(user_input)
 
         # If no data is found, retry with input correction
-        if len(cypher_query_response[1]) == 0:
-            input_corrector = LangChainIntegration()
-            updated_user_input = input_corrector.generate_response(input, '')
-            cypher_query_response = langchain_client.run_template_generation(updated_user_input)
+        if len(cypher_query_response[1]["context"]) == 0:
+            print("NOTE: No data was found from LangChain call, trying parameter correction\n")
+            input_corrector = ParameterCorrection()
+            updated_user_input = input_corrector.generate_response(user_input, '')
+            print(f"Retrying LangChain with corrected user input: [{updated_user_input[1]}]")
+            cypher_query_response = langchain_client.run_template_generation(updated_user_input[1])
     except Exception as e:
         print(f"ERROR: {e}")
         cypher_query_response = CYPHER_QUERY_ERROR
@@ -120,13 +120,13 @@ def execute_common_query(openai, user_input, question_id):
     neo4j = Neo4jClient()
     error_occurred = False
     input_parameter_response = get_input_parameter(user_input, openai)
+    print(input_parameter_response)
     extracted_input_parameter, input_parameter_type = input_parameter_response[0], input_parameter_response[1]
     # agraph path variable
     parameter_for_agraph = extracted_input_parameter
     
     print(f"COMMON QUERY: [{question_id}|{extracted_input_parameter}|{input_parameter_type}]")
     cypher_query = neo4j.generate_common_cypher_query(question_id, extracted_input_parameter)
-
     try:
         # Execute the query
         cypher_query_response = neo4j.execute_query(cypher_query)
@@ -135,14 +135,15 @@ def execute_common_query(openai, user_input, question_id):
         # If query execution fails, attempt to correct input parameter
         if len(cypher_query_response) == 0:
             input_corrector = ParameterCorrection()
-            corrected_input_parameter = input_corrector.generate_response(user_input, input_parameter_type)
+            corrected_input_response = input_corrector.generate_response(user_input, input_parameter_type)
+            corrected_input_parameter, corrected_input = corrected_input_response[0], corrected_input_response[1]
             corrected_cypher_query = neo4j.generate_common_cypher_query(question_id, corrected_input_parameter)
             cypher_query_response = neo4j.execute_query(corrected_cypher_query)
             parameter_for_agraph = corrected_input_parameter
             # If corrected query fails, we call LangChain
             if len(cypher_query_response) == 0:
                 langchain_client = LangChainClient()
-                cypher_query_response = langchain_client.run_template_generation(user_input)
+                cypher_query_response = langchain_client.run_template_generation(corrected_input)
                 parameter_for_agraph = ''
 
     except Exception as e:
@@ -153,6 +154,12 @@ def execute_common_query(openai, user_input, question_id):
     return { 'cypher_query_response': cypher_query_response, 'error_occurred': error_occurred, 
             'question_id': question_id, 'parameter_for_agraph': parameter_for_agraph}
 
+
+# Given the user question and data, calling LLM to create chatbot's final response
+def generate_final_output(openai, user_input, cypher_query_response):
+    chatbot_response_template = USER_RESPONSE_TEMPLATE.format(query=user_input, cypher_query_response=cypher_query_response)
+    response = openai.generate(chatbot_response_template)
+    return response
 
 # Setup StreamLit app
 def main():

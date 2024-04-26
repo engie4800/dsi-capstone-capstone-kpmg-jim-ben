@@ -8,7 +8,7 @@ from clients.openai_client import OpenAiClient
 from components.intent_matching import get_request_intent
 
 def test_intent_matching(filename):
-    data = pd.read_csv(filename, delimiter=';')
+    data = pd.read_csv(filename, delimiter=',')
 
     total_questions = 0
     total_common_questions = 0
@@ -17,12 +17,14 @@ def test_intent_matching(filename):
 
     overall_correct = 0
     common_correct = 0
+    common_question_id_correct = 0
     uncommon_correct = 0
     none_correct = 0
 
     for index, row in data.iterrows():
         question = row['Questions']
         expected_intent_type = row['Type']
+        expected_question_id = row['QueryID']
         print(f"Question: {question}")
         print(f"Expected Intent Type: {expected_intent_type}\n")
 
@@ -46,6 +48,11 @@ def test_intent_matching(filename):
             overall_correct += 1
             if actual_intent_type == "COMMON":
                 common_correct += 1
+
+                actual_question_id = int(response[1])
+                print(f"Actual Question ID: {actual_question_id}")
+                if expected_question_id == actual_question_id:
+                    common_question_id_correct += 1
             elif actual_intent_type == "UNCOMMON":
                 uncommon_correct += 1
             elif actual_intent_type == "NONE":
@@ -57,16 +64,18 @@ def test_intent_matching(filename):
     # Printing out the accuracy metrics for each intent type
     overall_accuracy = round(overall_correct / total_questions, 2)
     common_accuracy = round(common_correct / total_common_questions, 2)
+    common_question_id_accuracy = round(common_question_id_correct / total_common_questions, 2)
     uncommon_accuracy = round(uncommon_correct / total_uncommon_questions, 2)
     none_accuracy = round(none_correct / total_irrelevant_questions, 2)
 
     print("INTENT MATCHING ACCURACY METRICS\n")
     print(f"Overall accuracy: {overall_accuracy}")
     print(f"Common accuracy: {common_accuracy}")
+    print(f"Common question ID accuracy: {common_question_id_accuracy}")
     print(f"Uncommon accuracy: {uncommon_accuracy}")
     print(f"Irrelevant accuracy: {none_accuracy}")
 
 
 if __name__ == '__main__':
-    filename = "testing_data.csv"
+    filename = "Testing Questions - all_testing_Qs.csv"
     test_intent_matching(filename)

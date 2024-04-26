@@ -2,11 +2,14 @@ CHATBOT_INTRO_MESSAGE = """
 Hello! How can I help you today?
 
 Here are some common questions asked:
+- How does the PerformanceScore column impact downstream data?
 - What are the performance metrics of Customer Satisfaction Prediction Model?
 - What data is upstream to the Sales Confidence Interval report field?
+- How many nodes upstream is the datasource for the Monthly Sales Trend field?
 - How was the Sales Confidence Interval report field calculated?
-- What report fields are downstream of FeedbackComments?
-- What is the difference between the latest version and the previous version of Employee Productivity Prediction Model?
+- What is the difference between the latest version and the previous version of the Employee Productivity Prediction Model?
+- What are the top features of the the Inventory Management Prediction Model?
+- Tell me about the latest version of the Financial Health Prediction Model?
 """
 
 FAILED_INTENT_MATCH = """
@@ -27,5 +30,5 @@ Error occurred when fetching the requested data, please try again.
 """
 
 NO_RESULTS_FOUND = """
-No data was found for your result.
+No data was found for your request. Please ask another question.
 """

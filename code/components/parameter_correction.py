@@ -32,23 +32,34 @@ class ParameterCorrection:
         return names
 
     def generate_response(self, user_input, parameter_type):
-        query = f"MATCH (n:{parameter_type}) RETURN n"
+
+        print("========================PARAMETER CORRECTION========================\n")
+
+        if parameter_type:
+            query = f"MATCH (n:{parameter_type}) RETURN n"
+        else:
+            query = "MATCH (n) RETURN n"
+
         result = self.neo4j_graph.query(query)
         names_list = self.extract_names_from_result(result=result)
         print(f"Fetched relevant node names: {names_list}")
 
         system_template ='''You are an English word fuzzy matcing expert. First, you need to understand the user_input and find out the key_words in the input.
-                            Next, find the closest word matched with key_words in the database_nodes:{database_nodes} and return it.
+                            Next, find the closest word matched with key_words in the database_nodes:{database_nodes},
+                            return it and replace it within the original input with a '|' in between. The following are examples:
 
-                            Example: 
-                                - Input: toP_PerfoEmin_Regions
-                                - Output: [Top Performing Regions]
                             Example:
-                                - Input: IT Database
-                                - Output: [IT_Database]
+                                - Input: What are the performance metrics used in Customer Satisfaction Model Version 3?
+                                - Output: [Customer Satisfaction Model Version3|What are the performance metrics used in Customer Satisfaction Model Version3?]
+                            Example:
+                                - Input: What data is upstream to a toP_PerfoEmin_Regions report field?
+                                - Output: [Top Performing Regions|What data is upstream to a Top Performing Regions report field?]
+                            Example:
+                                - Input: Which users have access to the IT Database and what are their roles?
+                                - Output: [IT_Database|Which users have access to the IT_Database and what are their roles?]
                             Example:
                                 - Input: Which report fields will be affected if Fedback_Comments is changed?
-                                - Output: [FeedbackComments]
+                                - Output: [FeedbackComments|Which report fields will be affected if FeedbackComments is changed?]
                             '''
                             
         system_message_prompt = SystemMessagePromptTemplate.from_template(system_template)
@@ -64,21 +75,13 @@ class ParameterCorrection:
 
         chat = ChatOpenAI(openai_api_key=self.openai_api_key)
         response = chat(request)
-        print('========Original User Input=================')
-        print(user_input)
-    
+        print(f'\nOriginal User Input: [{user_input}]')
+        print(f'Corrected User Input: [{response.content}]')
 
-        print('========Fixed User Input====================')
-        print(response.content)
-        print(' ')
-
-        # match = re.search(r'\[(.*?)\]', response.content)
         cleaned_str = response.content.strip("[]").replace("'", "")
-        return cleaned_str
+        return cleaned_str.split("|")
 
-# if __name__ == "__main__":
-#     langchain_integration = LangChainIntegration()
-
-#     user_input = "What model versions are upstream to the predicted_satisfaction_score report field?"
-#     response = langchain_integration.generate_response(user_input,parameter_type='ReportField')
-#     print(response)
+if __name__ == "__main__":
+    parameter_correction = ParameterCorrection()
+    output = parameter_correction.generate_response("What data is upstream to a Fedback_Comments report field?", "ReportField")
+    print(f"OUTPUT: {output}")

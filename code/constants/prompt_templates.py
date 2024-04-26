@@ -1,11 +1,13 @@
 INTENT_MATCHING_TEMPLATE = """
     Task: 
     Step 1: determine if the user input is relevant or not based on whether it uses any words mentioned in the schema
-    If it is NOT relevant, return [NONE]
+    If it is NOT relevant, return [NONE,-1]
 
     If it is relevant, step 2, match user request intent to one of the following "common questions" and return the question number.
     
-    And if it doesn't match any of the following 5 questions, return [UNCOMMON]
+    And if it doesn't match any of the following 5 questions, return [UNCOMMON,0]
+
+    Make sure ONLY return [COMMON,Integer], [UNCOMMON,0] or [NONE,-1]!!!!!
 
     Common Questions:
     - 1. What report fields are downstream of a specific column?
@@ -14,18 +16,31 @@ INTENT_MATCHING_TEMPLATE = """
     - 4. How many nodes upstream is the datasource for a specific report field?
     - 5. How was this report field calculated?
     - 6. What is the difference between the latest version and the previous version of a specific model?
+    - 7. What are the top features of a specific model?
+    - 8. Tell me about the latest version of a specific model?
+    
+    Some examples of uncommon Questions:
+    - 0. How many report fields are there?
+    - 0. What is the database type of a specific database?
+    - 0. What are the columns in a specific table of a database?
+    - 0. Which model versions have an accuracy metric above 85%?
+    - 0. What are the parameters of a specific model version?
+    - 0. What are the column data types in a specific table in a database?
+    - 0. Which users have access to a specific report?
+    - 0. Who maintains a specific report?
+    - 0. Who is the owner of a specific report?
     
     Example:
     - Question: What is fastest animal in the world?
-    - Answer: [NONE]
+    - Answer: [NONE,-1]
 
     Example:
-    - Question: What are the names of some report fields?
-    - Answer: [UNCOMMON]
+    - Question: What are the SARIMA model parameters in Inventory Management Model Version 1?
+    - Answer: [UNCOMMON,0]
 
     Example:
-    - Question: How many databases are there?
-    - Answer: [UNCOMMON]
+    - Question: Which business group is linked to the Employee Productivity Report?
+    - Answer: [UNCOMMON,0]
 
     Example:
     - Question: What are the performance metrics of Customer Satisfaction Prediction Model?
@@ -36,8 +51,12 @@ INTENT_MATCHING_TEMPLATE = """
     - Answer: [COMMON,3]
 
     Example:
-    - Question: How was the Sales Confidence Interval report field calculated? 
-    - Answer: [COMMON,5]
+    - Question: What are the top features of a Customer Satisfaction Prediction Model?
+    - Answer: [COMMON,7]
+
+    Example:
+    - Question: Tell me about the latest version of the Customer Satisfaction Prediction Model?
+    - Answer: [COMMON,8]
 
     Schema:
     {schema}
@@ -57,7 +76,7 @@ INPUT_PARAMETER_EXTRACTION_TEMPLATE = """
     User input is:
     {question}
 
-    Example:
+     Example:
     - Question: What report fields are downstream of the FeedbackComments column?
     - Return [FeedbackComments,Column]
 
@@ -80,6 +99,16 @@ INPUT_PARAMETER_EXTRACTION_TEMPLATE = """
     Example:
     - Question: What is the difference between the latest version and the previous version of the Employee Productivity Prediction Model?
     - Return [Employee Productivity Prediction Model,Model]
+
+    Clarification of task: If a question contains both a report field parameter and a report parameter, only return the report field parameter.  Here are a couple of examples:
+    
+    Example:
+    - Question: Which data sources are upstream to the Predicted Demand for Products field in the Inventory Management Report?
+    - Return [Predicted Demand for Products,ReportField]
+
+    Example:
+    - Question: Which data elements feed into the Average Productivity by Department field in the Employee Productivity Report?
+    - Return [Average Productivity by Department,ReportField]
 
 """
 
@@ -181,8 +210,24 @@ UNCOMMON_QUESTION_WORKFLOW_TEMPLATE = """
 """
 
 USER_RESPONSE_TEMPLATE = """
-    Given this user input: {query}
+    Given this user question: {query}
     And data from the Neo4j database: {cypher_query_response}
-    Task: Generate a response to the user input
+
+    Task: Answer the user question using only the data from the Neo4j database.  Use nested bullet points to summarize the answer if longer than one sentence.
+
+    Example short answer response: The datasource for the Monthly Sales Trend field is 2 nodes upstream.
     
+    Example of long answer response:
+
+    The main differences between the latest version (Employee Productivity Model Version3) and the previous version (Employee Productivity Model Version2) of the Employee Productivity Prediction Model are as follows:
+    
+    1. Model Parameters:
+        - Version3: Decision Tree algorithm with a maximum depth of 8 and a minimum samples split of 4.
+        - Version2: Random Forest algorithm with 100 trees, a maximum depth of 10, and a minimum samples split of 2.
+
+    2. Top Features:
+        - Version3: The top features considered in Version3 are PerformanceScore (0.55), PerformanceReviewDate (0.25), and EmployeeID (0.2).
+        - Version2: The top features considered in Version2 are PerformanceScore (0.4), PerformanceReviewDate (0.3), PerformanceComments (0.2), and EmployeeID (0.1).
+
+    Overall, the key differences between the two versions lie in the choice of algorithm used, the parameters of the algorithm, and the weightage assigned to the top features in the model.
 """

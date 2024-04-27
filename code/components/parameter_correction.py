@@ -7,7 +7,6 @@ from langchain.prompts import (
 )
 from langchain_community.graphs import Neo4jGraph
 from langchain_openai import ChatOpenAI
-import re
 
 class ParameterCorrection:
     def __init__(self):
@@ -35,14 +34,17 @@ class ParameterCorrection:
 
         print("========================PARAMETER CORRECTION========================\n")
 
+        names_list = ""
+
         if parameter_type:
             query = f"MATCH (n:{parameter_type}) RETURN n"
+            result = self.neo4j_graph.query(query)
+            names_list = self.extract_names_from_result(result=result)
+            print(f"Fetched relevant node names: {names_list}\n")
         else:
             query = "MATCH (n) RETURN n"
-
-        result = self.neo4j_graph.query(query)
-        names_list = self.extract_names_from_result(result=result)
-        print(f"Fetched relevant node names: {names_list}")
+            result = self.neo4j_graph.query(query)
+            names_list = self.extract_names_from_result(result=result)
 
         system_template ='''You are an English word fuzzy matcing expert. First, you need to understand the user_input and find out the key_words in the input.
                             Next, find the closest word matched with key_words in the database_nodes:{database_nodes},
@@ -82,6 +84,10 @@ class ParameterCorrection:
         return cleaned_str.split("|")
 
 if __name__ == "__main__":
+    # parameter_correction = ParameterCorrection()
+    # output = parameter_correction.generate_response("What data is upstream to a Fedback_Comments report field?", "ReportField")
+    # print(f"OUTPUT: {output}")
+
     parameter_correction = ParameterCorrection()
-    output = parameter_correction.generate_response("What data is upstream to a Fedback_Comments report field?", "ReportField")
+    output = parameter_correction.generate_response("What data is upstream to a Fedback_Comments report field?", "")
     print(f"OUTPUT: {output}")

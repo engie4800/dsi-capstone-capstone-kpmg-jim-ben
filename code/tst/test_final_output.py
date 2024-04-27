@@ -54,7 +54,6 @@ def test_final_output(filename):
                 else:
                     fetched_data = cypher_response
                         
-
             print(f"FETCHED DATA: {fetched_data}")
             if len(fetched_data) > 0:
                 actual_final_answer = generate_final_output(openai, question, fetched_data)
@@ -64,7 +63,13 @@ def test_final_output(filename):
         elif intent_type == "UNCOMMON":
             total_uncommon_questions += 1
             fetched_data = execute_uncommon_query(question)
-            actual_final_answer = generate_final_output(openai, question, fetched_data)
+            fetched_data = fetched_data['cypher_query_response'][1]['context']
+            print(f"FETCHED DATA: {fetched_data}")
+            
+            if len(fetched_data) > 0:
+                actual_final_answer = generate_final_output(openai, question, fetched_data)
+            else:
+                actual_final_answer = ""
 
         if len(actual_final_answer) > 0:
             print(f"\nEXPECTED FINAL ANSWER: {expected_final_answer}")
@@ -80,9 +85,9 @@ def test_final_output(filename):
                 elif intent_type == "UNCOMMON":
                      total_uncommon_correct += 1
             else:
-                print(f"FAILURE: [{question}]")
+                print(f"FAILURE (BELOW SCORE THRESHOLD) for Question: [{question}]")
         else:
-            print(f"FAILURE: [{question}]")
+            print(f"FAILURE (NO DATA FOUND FROM QUERY) for Question: [{question}]")
 
         print("================================\n")
         time.sleep(2)

@@ -49,8 +49,9 @@ def generate_cypher_query(question_idx, parameters):
                 OPTIONAL MATCH (col)-[r1]->(de1:DataElement)-[r2]->(rf1:ReportField)
                 WITH col, r1, collect(distinct de1) AS de1s, r2, rf1
                 OPTIONAL MATCH (col)-[r3]->(de2_1:DataElement)-[r4]->(mv:ModelVersion)-[r5]->(de2_2:DataElement)-[r6]->(rf2:ReportField)
+                WHERE mv.latest_version = "True"
                 WITH col, r1, de1s, r2, rf1, r3, collect(distinct de2_1) AS de2_1s, mv, collect(distinct de2_2) AS de2_2s, r4, r5, r6, rf2
-                RETURN col, rf1, rf2, r1, r2, r3, r4, r5, r6
+                RETURN col, rf1, rf2, mv
                 """
     # Upstream question
     elif question_idx == 3 or question_idx == 4:
@@ -252,6 +253,7 @@ def downstream_schema(result):
 
     for record in result:
         column_node = None
+        modelversion_node = None
         report_field_nodes = []
 
         for key, item in record.items():
@@ -266,13 +268,19 @@ def downstream_schema(result):
                 # Check if the node is a 'Column' or 'ReportField' node
                 if 'Column' in item.labels:
                     column_node = item
+                elif 'ModelVersion' in item.labels:
+                    modelversion_node = item
                 elif 'ReportField' in item.labels:
                     report_field_nodes.append(item)
 
         # Create "affect" edges between the 'Column' node and each 'ReportField' node
-        if column_node is not None:
+        if modelversion_node is not None:
+            edges.append(Edge(source=column_node['name'], target=modelversion_node['name'], label=''))
             for rf_node in report_field_nodes:
-                edges.append(Edge(source=column_node['name'], target=rf_node['name'], label='downstream'))
+                edges.append(Edge(source=modelversion_node['name'], target=rf_node['name'], label=''))
+        else:
+            for rf_node in report_field_nodes:
+                edges.append(Edge(source=column_node['name'], target=rf_node['name'], label=''))
 
     return nodes, edges
 
@@ -307,7 +315,7 @@ def high_level_schema(result):
 # 3, "Top Expense Categories"
 # 4, "Predicted Productivity Score"
 # 6, "Employee Productivity Prediction Model"
-# question_idx, parameters = 4, "Predicted Productivity Score"
+# question_idx, parameters = 1, "FeedbackComments"
 # nodes, edges = fetch_graph_data(question_idx, parameters)
 
 # # agraph function

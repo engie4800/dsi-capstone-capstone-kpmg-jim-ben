@@ -134,6 +134,7 @@ def execute_common_query(openai, user_input, question_id):
 
         # If query execution fails, attempt to correct input parameter
         if len(cypher_query_response) == 0:
+            print(f"NOTE: Common query execution failed, trying parameter correction")
             input_corrector = ParameterCorrection()
             corrected_input_response = input_corrector.generate_response(user_input, input_parameter_type)
             corrected_input_parameter, corrected_input = corrected_input_response[0], corrected_input_response[1]
@@ -142,6 +143,7 @@ def execute_common_query(openai, user_input, question_id):
             parameter_for_agraph = corrected_input_parameter
             # If corrected query fails, we call LangChain
             if len(cypher_query_response) == 0:
+                print(f"NOTE: Common query execution failed AFTER correction, trying LangChain")
                 langchain_client = LangChainClient()
                 cypher_query_response = langchain_client.run_template_generation(corrected_input)
                 parameter_for_agraph = ''

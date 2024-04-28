@@ -28,26 +28,34 @@ query_map = {
 
     4: '''MATCH (rf:ReportField {{name: "{parameter1}"}})
         OPTIONAL MATCH (rf)<-[:FEEDS]-(de1:DataElement)<-[:TRANSFORMS]-(col1:Column)
-        OPTIONAL MATCH (rf)<-[:FEEDS]-(de2_1:DataElement)<-[:PRODUCES]-(mv:ModelVersion) <-[:INPUT_TO]-(de2_2:DataElement)<-[:TRANSFORMS]-(col2:Column)
-        WITH
+        OPTIONAL MATCH (rf)<-[:FEEDS]-(de2_1:DataElement)<-[:PRODUCES]-(mv:ModelVersion)<-[:INPUT_TO]-(de2_2:DataElement)<-[:TRANSFORMS]-(col2:Column)
+        WITH rf,
         CASE
-        WHEN de1 IS NOT NULL THEN 2
-        WHEN mv IS NOT NULL THEN 4
-        ELSE 0
-        END AS numberOfSteps
-        RETURN DISTINCT numberOfSteps''',
+            WHEN de1 IS NOT NULL THEN 2
+            WHEN mv IS NOT NULL THEN 4
+            ELSE 0
+        END AS Steps
+        RETURN DISTINCT "The number of nodes upstream to the datasource for " + rf.name + " is " + toString(Steps) + "." AS NumberofUpstreamNode''',
         
-    5: ''' MATCH (rf:ReportField {{name: "{parameter1}" }})<-[:FEEDS]-(de:DataElement)
+    5: '''MATCH (rf:ReportField {{name: "{parameter1}" }})<-[:FEEDS]-(de:DataElement)
         RETURN de.generatedFrom AS GeneratedFrom''',
 
-    6: ''' MATCH (m:Model)
+    6: '''MATCH (m:Model)
         WHERE m.name CONTAINS "{parameter1}"
         MATCH (m)-[r1:LATEST_VERSION]->(mv1:ModelVersion)
         MATCH (m)-[r2]->(mv2:ModelVersion)
         WHERE mv2.version = mv1.version-1
-        RETURN mv1.name AS LatestVersion_v1, mv2.name AS PreviousVersion_v2,
-        {{ model_parameters_v1: mv1.model_parameters, model_parameters_v2: mv2.model_parameters }} AS ModelParameters,
-        {{ top_features_v1: mv1.top_features, top_features_v2: mv2.top_features }} AS TopFeatures''',
+        RETURN
+        mv1.name AS LatestVersion,
+        mv2.name AS PreviousVersion,
+        {{
+        model_parameters_LatestVersion: mv1.model_parameters,
+        model_parameters_PreviousVersion: mv2.model_parameters
+        }} AS ModelParameters,
+        {{
+        top_features_LatestVersion: mv1.top_features,
+        top_features_PreviousVersion: mv2.top_features
+        }} AS TopFeatures''',
     
     7: '''MATCH (m:Model)
         WHERE m.name CONTAINS "{parameter1}"

@@ -100,6 +100,14 @@ INPUT_PARAMETER_EXTRACTION_TEMPLATE = """
     - Question: What is the difference between the latest version and the previous version of the Employee Productivity Prediction Model?
     - Return [Employee Productivity Prediction Model,Model]
 
+    Example:
+    - Question: What are the top features of a Customer Satisfaction Prediction Model?
+    - Return: [Customer Satisfaction Prediction Model,Model]
+
+    Example:
+    - Question: Tell me about the latest version of the Sales Performance Prediction Model?
+    - Return [Sales Performance Prediction Model,Model]
+
     Clarification of task: If a question contains both a report field parameter and a report parameter, only return the report field parameter.  Here are a couple of examples:
     
     Example:
@@ -201,6 +209,16 @@ UNCOMMON_QUESTION_WORKFLOW_TEMPLATE = """
     Cypher Query:
     MATCH (rf:ReportField {{name: "Sales Confidence Interval"}})<-[:FEEDS]-(de:DataElement)
     RETURN de.generatedFrom AS GeneratedFrom
+
+    Question: What forecasting method is implemented in Inventory Management Prediction Model Version1 model version?
+    Cypher Query:
+    MATCH (mv:ModelVersion {name: "Inventory Management Prediction Model Version1"})
+    RETURN mv.model_parameters
+
+    Question: What is the maximum depth setting for the Decision Tree in Financial Health Prediction Model Version2?
+    Cypher Query:
+    MATCH (mv:ModelVersion {name: "Financial Health Prediction Model Version2"})
+    RETURN mv.model_parameters
 
     User input:
     {question}

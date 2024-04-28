@@ -225,6 +225,9 @@ UNCOMMON_QUESTION_WORKFLOW_TEMPLATE = """
 
     Schema:
     {schema}
+
+    In addition to the schema's nodes and relationships, the ModelVersion node has the following properties:
+    [“name", "version", "latest_version", "metadata", "model_parameters", "top_features", "performance_metrics", "model_id"]
 """
 
 USER_RESPONSE_TEMPLATE = """

@@ -212,12 +212,12 @@ UNCOMMON_QUESTION_WORKFLOW_TEMPLATE = """
 
     Question: What forecasting method is implemented in Inventory Management Prediction Model Version1 model version?
     Cypher Query:
-    MATCH (mv:ModelVersion {name: "Inventory Management Prediction Model Version1"})
+    MATCH (mv:ModelVersion {{name: "Inventory Management Prediction Model Version1"}})
     RETURN mv.model_parameters
 
     Question: What is the maximum depth setting for the Decision Tree in Financial Health Prediction Model Version2?
     Cypher Query:
-    MATCH (mv:ModelVersion {name: "Financial Health Prediction Model Version2"})
+    MATCH (mv:ModelVersion {{name: "Financial Health Prediction Model Version2"}})
     RETURN mv.model_parameters
 
     User input:

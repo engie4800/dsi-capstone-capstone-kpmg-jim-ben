@@ -30,7 +30,6 @@ def rag_chatbot(user_input):
     print(f"User request: {user_input}")
     openai = OpenAiClient()
     error_occurred = False
-    agraph_stuff = {}
     # Get user request intent
     get_request_intent_response = get_request_intent(user_input, openai)
     intent_type = get_request_intent_response[0]
@@ -90,7 +89,7 @@ def rag_chatbot(user_input):
         return NO_RESULTS_FOUND
 
     response = generate_final_output(openai, user_input, cypher_query_response)
-    return response, agraph_stuff
+    return response
 
 def execute_uncommon_query(user_input):
     langchain_client = LangChainClient()
@@ -196,7 +195,7 @@ def main():
 
         # Call RAG chatbot
         logging.info("Started request execution")
-        response, agraph_stuff = rag_chatbot(prompt)
+        response = rag_chatbot(prompt)
         logging.info("Finished request execution")
 
        

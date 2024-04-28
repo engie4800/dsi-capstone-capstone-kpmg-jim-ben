@@ -24,18 +24,20 @@ def test_final_output(filename):
     for index, row in data.iterrows():
         total_questions += 1
 
+        row_id = row['ID']
         question = row['Questions']
         intent_type = row['Type']
         question_id = row['QueryID']
         expected_final_answer = row['CorrectAnswer']
 
+        print(f"TEST QUESTION #{row_id}")
         print(f"Question: {question}")
         print(f"Intent Type: {intent_type}")
         
 
         if intent_type == "COMMON":
             total_common_questions += 1
-            print(f"Question ID: {question_id}")
+            print(f"Common Question ID: {question_id}")
             query_response = execute_common_query(openai, question, question_id)
             print(f"Query Response: {query_response}")
 

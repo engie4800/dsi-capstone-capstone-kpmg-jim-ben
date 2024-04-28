@@ -9,7 +9,7 @@ from clients.openai_client import OpenAiClient
 from app import execute_common_query, execute_uncommon_query, generate_final_output
 
 def test_final_output(filename):
-    data = pd.read_csv(filename, delimiter=';')
+    data = pd.read_csv(filename, delimiter=',')
     openai = OpenAiClient()
 
     total_correct = 0

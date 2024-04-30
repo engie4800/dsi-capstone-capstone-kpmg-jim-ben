@@ -4,7 +4,6 @@ from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain.prompts.prompt import PromptTemplate
 from constants.prompt_templates import UNCOMMON_QUESTION_WORKFLOW_TEMPLATE
-from retry import retry
 
 import os
 
@@ -14,7 +13,6 @@ class LangChainClient:
             url=os.getenv('NEO4J_URI'), username=os.getenv('NEO4J_USER'), password=os.getenv('NEO4J_PASSWORD')
         )
     
-    @retry(tries=2, delay=3)
     def run_template_generation(self, user_input):
         CYPHER_GENERATION_PROMPT = PromptTemplate(
             input_variables=["schema", "question"], template=UNCOMMON_QUESTION_WORKFLOW_TEMPLATE

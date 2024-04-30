@@ -97,7 +97,7 @@ def execute_uncommon_query(user_input):
     print("UNCOMMON QUERY")
 
     try:
-        print(user_input)
+        print(f"User input: {user_input}")
         cypher_query_response = langchain_client.run_template_generation(user_input)
 
         # If no data is found, retry with input correction

@@ -33,45 +33,47 @@ def test_final_output(filename):
         print(f"TEST QUESTION #{row_id}")
         print(f"Question: {question}")
         print(f"Intent Type: {intent_type}")
-        
+        actual_final_answer = ""
 
-        if intent_type == "COMMON":
-            total_common_questions += 1
-            print(f"Common Question ID: {question_id}")
-            query_response = execute_common_query(openai, question, question_id)
-            print(f"Query Response: {query_response}")
+        try:
+            if intent_type == "COMMON":
+                total_common_questions += 1
+                print(f"Common Question ID: {question_id}")
+                query_response = execute_common_query(openai, question, question_id)
+                print(f"Query Response: {query_response}")
 
-            # Extract the cypher_query_response part of the response
-            cypher_response = query_response.get('cypher_query_response', None)
+                # Extract the cypher_query_response part of the response
+                cypher_response = query_response.get('cypher_query_response', None)
 
-            fetched_data = ""
-            # Check if the structure is like Example 1
-            if isinstance(cypher_response, list):
-                # Extracting data from LangChain
-                if isinstance(cypher_response[0], dict) and 'query' in cypher_response[0]:
-                    # Check if it's like Example 2 and extract the context if present
-                    for item in cypher_response:
-                        if 'context' in item:
-                            fetched_data = item['context']
+                fetched_data = ""
+                # Check if the structure is like Example 1
+                if isinstance(cypher_response, list):
+                    # Extracting data from LangChain
+                    if isinstance(cypher_response[0], dict) and 'query' in cypher_response[0]:
+                        # Check if it's like Example 2 and extract the context if present
+                        for item in cypher_response:
+                            if 'context' in item:
+                                fetched_data = item['context']
+                    else:
+                        fetched_data = cypher_response
+                print(f"FETCHED DATA: {fetched_data}")
+                if len(fetched_data) > 0:
+                    actual_final_answer = generate_final_output(openai, question, fetched_data)
                 else:
-                    fetched_data = cypher_response
-                        
-            print(f"FETCHED DATA: {fetched_data}")
-            if len(fetched_data) > 0:
-                actual_final_answer = generate_final_output(openai, question, fetched_data)
-            else:
-                actual_final_answer = ""
+                    actual_final_answer = ""
 
-        elif intent_type == "UNCOMMON":
-            total_uncommon_questions += 1
-            fetched_data = execute_uncommon_query(question)
-            fetched_data = fetched_data['cypher_query_response'][1]['context']
-            print(f"FETCHED DATA: {fetched_data}")
-            
-            if len(fetched_data) > 0:
-                actual_final_answer = generate_final_output(openai, question, fetched_data)
-            else:
-                actual_final_answer = ""
+            elif intent_type == "UNCOMMON":
+                total_uncommon_questions += 1
+                fetched_data = execute_uncommon_query(question)
+                fetched_data = fetched_data['cypher_query_response'][1]['context']
+                print(f"FETCHED DATA: {fetched_data}")
+                if len(fetched_data) > 0:
+                    actual_final_answer = generate_final_output(openai, question, fetched_data)
+                else:
+                    actual_final_answer = ""
+
+        except Exception as e:
+            print(f"WARNING: Caught error while running script: {e}")
 
         if len(actual_final_answer) > 0:
             print(f"\nEXPECTED FINAL ANSWER: {expected_final_answer}")

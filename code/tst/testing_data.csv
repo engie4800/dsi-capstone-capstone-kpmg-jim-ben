@@ -1,20 +1,116 @@
-ID;Questions;Type;CorrectAnswer;QueryID;ParameterExtracted;GeneratedCypherQuery;;;;;;;;;;;;;;;;;;;;;
-1;Which downstream fields are influenced by the AccountBalance column in the Accounts table?;COMMON;AccountBalance influences the Cash Flow Trends field in the Financial Health Dashboard.;1;AccountBalance;;;;;;;;;;;;;;;;;;;;;;
-2;What are the performance metrics of the latest version for the Employee Productivity Model?;COMMON;Employee Productivity Model (Version 3): Accuracy (0.88), Precision (0.85), Recall (0.83).;2;Employee Productivity Model;;;;;;;;;;;;;;;;;;;;;;
-3;What data contributes to the Monthly Sales Trend field in the Sales Performance Dashboard?;COMMON;"""SalesOrderDate"" and ""OrderTotalAmount"" columns are upstream data for the ""monthly_sales_trend"" field in the Sales Performance Dashboard.";3;Monthly Sales Trend;;;;;;;;;;;;;;;;;;;;;;
-4;How many nodes upstream is the datasource for the Monthly Sales Trend field in the Sales Performance Dashboard?;COMMON;2;4;Monthly Sales Trend;;;;;;;;;;;;;;;;;;;;;;
-5;How was the Monthly Sales Trend field in the Sales Performance Dashboard calculated?;COMMON;The Monthly Sales Trend field is calculated by aggregating 'OrderTotalAmount' by month based on 'SalesOrderDate'.;5;Monthly Sales Trend;;;;;;;;;;;;;;;;;;;;;;
-6;"What are the differences in algorithm and top_features between ""Employee Productivity Model Version3"" and its previous version?";COMMON;Employee Productivity Model Version3: Random Forest, PerformanceScore (0.40), PerformanceReviewDate (0.30), PerformanceComments (0.20), EmployeeID (0.10). Previous Version (Version2): Decision Tree, PerformanceScore (0.55), PerformanceReviewDate (0.25), EmployeeID (0.20).;6;Employee Productivity Model Version3;;;;;;;;;;;;;;;;;;;;;;
-7;What type of algorithm is used in Financial Health Model Version 1?;UNCOMMON;Neural Network;;;"MATCH (m:Model {name: ""Financial Health Model Version1""})
-RETURN m.model_parameters.activation_function AS ActivationFunction";;;;;;;;;;;;;;;;;;;;;
-8;What are the performance metrics used in Customer Satisfaction Model Version 3?;UNCOMMON;Mean absolute error, mean percentage error, root mean squared error;;;"MATCH (m:Model {name: ""Customer Satisfaction Model Version3""})
-RETURN m.model_parameters.trees AS Trees";;;;;;;;;;;;;;;;;;;;;
-9;What are the seasonal order parameters for the SARIMA model in Sales Performance Model Version 1?;UNCOMMON;[1, 1, 1, 12];;;"MATCH (m:Model {name: ""Sales Performance Model Version1""})
-RETURN m.model_parameters.order AS Order, m.model_parameters.seasonal_order AS SeasonalOrder";;;;;;;;;;;;;;;;;;;;;
-10;What algorithm is employed in the Employee Productivity Model Version 2?;UNCOMMON;Decision Tree;;;"MATCH (m:Model {name: ""Employee Productivity Model Version2""})
-UNWIND m.input_data_elements AS input
-RETURN input.columns AS Columns";;;;;;;;;;;;;;;;;;;;;
-11;What is the capital of France?;NONE;;;;;;;;;;;;;;;;;;;;;;;;;
-12;How long is the Great Wall of China?;NONE;;;;;;;;;;;;;;;;;;;;;;;;;
-13;Who won the Nobel Prize in Physics in 2020?;NONE;;;;;;;;;;;;;;;;;;;;;;;;;
-14;What is the boiling point of water at sea level?;NONE;;;;;;;;;;;;;;;;;;;;;;;;;
+ID,Questions,Type,CorrectAnswer,QueryID,ParameterExtracted
+1,Which downstream fields are influenced by the AccountBalance column in the Accounts table?,COMMON,AccountBalance' influences the 'Cash Flow Trends' field in the Financial Health Dashboard.,1,AccountBalance
+2,What data elements are affected by changes in the ItemReorderLevel column in the Product Inventory table?,COMMON,"ItemReorderLevel' impacts the 'Products with Low Stock', 'Inventory Turnover Ratio' field in the Inventory Management Report.",1,ItemReorderLevel
+3,How does the PerformanceScore column in the Employee Performance table impact downstream data?,COMMON,"PerformanceScore' affects the 'Average Productivity by Department', 'Top Performers', and 'Productivity Improvement' fields in the Employee Productivity Report.",1,PerformanceScore
+4,Which fields are impacted by the OrderTotalAmount column in the Sales Orders table?,COMMON,"OrderTotalAmount' influences the 'Monthly Sales Trend', 'Year-over-Year Growth', 'Sales by Region', and 'Top Performing Regions' fields in the Sales Performance Dashboard.",1,OrderTotalAmount
+5,How does the ItemQuantity column in the Product Inventory table impact downstream fields?,COMMON,"Products with Low Stock', 'Inventory Turnover Ratio', and 'Average Inventory Value' fields in the Inventory Management Report",1,ItemQuantity
+6,What downstream elements are affected by the TransactionType column in the Transactions table?,COMMON,TransactionType' affects the 'Top Expense Categories' and 'Net Cash Flow' field in the Financial Health Dashboard.,1,TransactionType
+7,Which downstream data elements are influenced by the PerformanceID column in the Employee Performance table?,COMMON,Average Productivity by Department' and 'Productivity Improvement' fields in the Employee Productivity Report.,1,PerformanceID
+8,What fields are affected by changes in the TransactionAmount column in the Transactions table?,COMMON,Net Cash Flow' and 'Top Expense Categories' fields in the Financial Health Dashboard.,1,TransactionAmount
+9,How does the SupplierLeadTime column in the Suppliers table influence downstream data?,COMMON,Average Days to Reorder' field in the Stock Analysis section of the Inventory Management Report.,1,SupplierLeadTime
+10,Which downstream elements are impacted by the FeedbackRating column in the Customer Feedback table?,COMMON,Overall Sentiment' and 'Key Drivers of Satisfaction' fields in the Customer Satisfaction Survey Analysis.,1,FeedbackRating
+11,What are the performance metrics of the latest version for the Employee Productivity Model?,COMMON,"Employee Productivity Model (Version 3): Accuracy (0.88), Precision (0.85), Recall (0.83).",2,Employee Productivity Model
+12,What are the performance metrics of the latest version for the Financial Health Model?,COMMON,"Financial Health Model (Version 3): Accuracy (0.85), Precision (0.82), Recall (0.80).",2,Financial Health Model
+13,What are the performance metrics of the latest version for the Inventory Management Model?,COMMON,"Inventory Management Model (Version 3): Mean Absolute Error (0.70), Mean Percentage Error (0.55), Root Mean Squared Error (0.60).",2,Inventory Management Model
+14,What are the performance metrics of the latest version for the Sales Performance Model?,COMMON,"Sales Performance Model (Version 3): Mean Absolute Error (10500), Mean Percentage Error (0.12), Root Mean Squared Error (15500).",2,Sales Performance Model
+15,What are the performance metrics of the latest version for the Customer Satisfaction Model?,COMMON,"Customer Satisfaction Model (Version 3): Accuracy (0.82), Precision (0.79), Recall (0.77).",2,Customer Satisfaction Model
+16,What are the performance metrics of the newest version for the Employee Productivity Model?,COMMON,"Employee Productivity Model (Version 3): Accuracy (0.88), Precision (0.85), Recall (0.83).",2,Employee Productivity Model
+17,What are the performance metrics of the most recent version for the Financial Health Model?,COMMON,"Financial Health Model (Version 3): Accuracy (0.85), Precision (0.82), Recall (0.80).",2,Financial Health Model
+18,What are the performance metrics of the latest iteration for the Inventory Management Model?,COMMON,"Inventory Management Model (Version 3): Mean Absolute Error (0.70), Mean Percentage Error (0.55), Root Mean Squared Error (0.60).",2,Inventory Management Model
+19,What are the performance metrics of the final version for the Sales Performance Model?,COMMON,"Sales Performance Model (Version 3): Mean Absolute Error (10500), Mean Percentage Error (0.12), Root Mean Squared Error (15500).",2,Sales Performance Model
+20,What are the performance metrics of the updated version for the Customer Satisfaction Model?,COMMON,"Customer Satisfaction Model (Version 3): Accuracy (0.82), Precision (0.79), Recall (0.77).",2,Customer Satisfaction Model
+21,What data contributes to the Monthly Sales Trend field in the Sales Performance Dashboard?,COMMON,"""SalesOrderDate"" and ""OrderTotalAmount"" columns are upstream data for the ""monthly_sales_trend"" field in the Sales Performance Dashboard.",3,Monthly Sales Trend
+22,Which data sources are upstream to the Predicted Demand for Products field in the Inventory Management Report?,COMMON,"""ProductID,"" ""ItemName,"" ""ItemDescription,"" ""ItemQuantity,"" ""ItemReorderLevel"" columns are upstream data for the ""predicted_demand_for_products"" field in the Inventory Management Report.",3,Predicted Demand for Products
+23,What data inputs are used to generate the Net Cash Flow field in the Financial Health Dashboard?,COMMON,"""TransactionID,"" ""TransactionType,"" ""TransactionAmount,"" ""TransactionDate"" columns are upstream data for the ""net_cash_flow"" field in the Financial Health Dashboard.",3,Net Cash Flow
+24,Which data elements feed into the Average Productivity by Department field in the Employee Productivity Report?,COMMON,"""PerformanceID,"" ""EmployeeID,"" ""PerformanceReviewDate,"" ""PerformanceScore"" columns are upstream data for the ""average_productivity_by_department"" field in the Employee Productivity Report.",3,Average Productivity by Department
+25,What are the data sources for the Overall Sentiment field in the Customer Satisfaction Survey Analysis?,COMMON,"""FeedbackID,"" ""CustomerID,"" ""FeedbackDate,"" ""FeedbackRating,"" ""FeedbackComments"" columns are upstream data for the ""overall_sentiment"" field in the Customer Satisfaction Survey Analysis.",3,Overall Sentiment
+26,What upstream data is used for the Sales by Region field in the Sales Performance Dashboard?,COMMON,"""OrderID,"" ""SalesOrderDate,"" ""OrderTotalAmount"" columns are upstream data for the ""sales_by_region"" field in the Sales Performance Dashboard.",3,Sales by Region
+27,Which data sources feed into the Cost Reduction Opportunities field in the Financial Health Dashboard?,COMMON,"""AccountID,"" ""AccountType"" columns are upstream data for the ""cost_reduction_opportunities"" field in the Financial Health Dashboard.",3,Cost Reduction Opportunities
+28,What are the data inputs for the Training Hours field in the Employee Productivity Report?,COMMON,"""ProgramID,"" ""TrainingDate,"" ""TrainingHours"" columns are upstream data for the ""training_hours"" field in the Employee Productivity Report.",3,Training Hours
+29,How does the data for the Response Rate field in the Customer Satisfaction Survey Analysis get sourced?,COMMON,"""FeedbackID,"" ""FeedbackDate"" columns are upstream data for the ""response_rate"" field in the Customer Satisfaction Survey Analysis.",3,Response Rate
+30,Which data is upstream to the Top Expense Categories field in the Financial Health Dashboard?,COMMON,"""TransactionID,"" ""TransactionType,"" ""TransactionAmount,"" ""TransactionDate"" columns are upstream data for the ""top_expense_categories"" field in the Financial Health Dashboard.",3,Top Expense Categories
+31,How many nodes upstream is the datasource for the Monthly Sales Trend field in the Sales Performance Dashboard?,COMMON,2,4,Monthly Sales Trend
+32,"For the Predicted Demand for Products field in the Inventory Management Report, how many nodes upstream is its datasource?",COMMON,4,4,Predicted Demand for Products
+33,What is the number of nodes upstream to the datasource for the Net Cash Flow field in the Financial Health Dashboard?,COMMON,2,4,Net Cash Flow
+34,How many nodes upstream is the datasource for the Average Productivity by Department field in the Employee Productivity Report?,COMMON,2,4,Average Productivity by Department
+35,"For the Overall Sentiment field in the Customer Satisfaction Survey Analysis, how many nodes upstream is its datasource?",COMMON,2,4,Overall Sentiment
+36,How many nodes upstream is the datasource for the Sales by Region field in the Sales Performance Dashboard?,COMMON,2,4,Sales by Region
+37,What is the number of nodes upstream to the datasource for the Cost Reduction Opportunities field in the Financial Health Dashboard?,COMMON,2,4,Cost Reduction Opportunities
+38,How many nodes upstream is the datasource for the Training Hours field in the Employee Productivity Report?,COMMON,2,4,Training Hours
+39,"For the Response Rate field in the Customer Satisfaction Survey Analysis, how many nodes upstream is its datasource?",COMMON,2,4,Response Rate
+40,How many nodes upstream is the datasource for the Top Expense Categories field in the Financial Health Dashboard?,COMMON,2,4,Top Expense Categories
+41,How was the Monthly Sales Trend field in the Sales Performance Dashboard calculated?,COMMON,The Monthly Sales Trend field is calculated by aggregating 'OrderTotalAmount' by month based on 'SalesOrderDate'.,5,Monthly Sales Trend
+42,What is the calculation method for the Predicted Demand for Products field in the Inventory Management Report?,COMMON,The Predicted Demand for Products field is calculated using a demand forecasting model based on historical 'ItemQuantity' sales data.,5,Predicted Demand for Products
+43,How was the Net Cash Flow field in the Financial Health Dashboard derived?,COMMON,The Net Cash Flow field is calculated by subtracting total outflows from total inflows per 'TransactionDate'.,5,Net Cash Flow
+44,What is the formula used to calculate the Average Productivity by Department field in the Employee Productivity Report?,COMMON,The Average Productivity by Department field is calculated by averaging the 'PerformanceScore' from performance reviews on 'PerformanceReviewDate' for each department.,5,Average Productivity by Department
+45,How was the Overall Sentiment field in the Customer Satisfaction Survey Analysis computed?,COMMON,The Overall Sentiment field is calculated by analyzing 'FeedbackComments' and 'FeedbackRating' from customer feedback submitted on 'FeedbackDate' to gauge overall sentiment.,5,Overall Sentiment
+46,What is the calculation method for the Sales by Region field in the Sales Performance Dashboard?,COMMON,The Sales by Region field is calculated by compiling 'OrderTotalAmount' by 'SalesOrderDate' to analyze sales performance by region.,5,Sales by Region
+47,How was the Cost Reduction Opportunities field in the Financial Health Dashboard determined?,COMMON,The Cost Reduction Opportunities field is calculated by analyzing spending patterns by 'AccountType' to uncover potential areas for cost savings.,5,Cost Reduction Opportunities
+48,What is the formula used to calculate the Training Hours field in the Employee Productivity Report?,COMMON,The Training Hours field is calculated by compiling the total hours of training conducted on 'TrainingDate' for each 'ProgramID'.,5,Training Hours
+49,How was the Response Rate field in the Customer Satisfaction Survey Analysis computed?,COMMON,"Dividing the number of completed feedback forms by the total number sent, tracked by 'FeedbackID' and 'FeedbackDate'.",5,Response Rate
+50,What is the calculation method for the Top Expense Categories field in the Financial Health Dashboard?,COMMON,The Top Expense Categories field is calculated by categorizing expenses by 'TransactionType' and summing up 'TransactionAmount' to identify the categories with the highest spending.,5,Top Expense Categories
+51,What are the differences in algorithm and top_features between Employee Productivity Model Version3 and its previous version?,COMMON,"Employee Productivity Model Version3: Random Forest, PerformanceScore (0.40), PerformanceReviewDate (0.30), PerformanceComments (0.20), EmployeeID (0.10). Previous Version (Version2): Decision Tree, PerformanceScore (0.55), PerformanceReviewDate (0.25), EmployeeID (0.20).",6,Employee Productivity Model Version3
+52,How do the algorithm and top_features of Financial Health Model Version2 compare to its following version?,COMMON,"Financial Health Model Version2: Decision Tree, TransactionAmount (0.50), TransactionDate (0.30), AccountID (0.20). Following Version (Version3): Linear Regression, TransactionAmount (0.40), TransactionDate (0.30), TransactionType (0.20), AccountID (0.10).",6,Financial Health Model Version2
+53,What changes in algorithm and top_features are observed between Inventory Management Model Version3 and its earlier version?,COMMON,"Inventory Management Model Version3: Linear Regression, ItemQuantity (0.40), ItemReorderLevel (0.30), ItemName (0.20), ProductID (0.10). Earlier Version (Version2): Neural Network, ItemQuantity (0.55), ItemName (0.25), ItemDescription (0.20).",6,Inventory Management Model Version3
+54,How does the algorithm and top_features of Sales Performance Model Version3 differ from its previous version?,COMMON,"Sales Performance Model Version3: Prophet, OrderTotalAmount (0.40), SalesOrderDate (0.30), ProductCategory (0.20), Region (0.10). Previous Version (Version2): Neural Network, OrderTotalAmount (0.45), ProductCategory (0.35), Region (0.20).",6,Sales Performance Model Version3
+55,What are the differences in algorithm and top_features between Customer Satisfaction Model Version2 and the latest version?,COMMON,"Customer Satisfaction Model Version2: Logistic Regression, FeedbackRating (0.50), FeedbackDate (0.35), FeedbackComments (0.15). Latest Version (Version3): Random Forest, FeedbackRating (0.40), FeedbackDate (0.30), FeedbackComments (0.20).",6,Customer Satisfaction Model Version2
+56,How do the algorithm and top_features of Employee Productivity Model Version2 compare to its succeeding version?,COMMON,"Employee Productivity Model Version2: Decision Tree, PerformanceScore (0.55), PerformanceReviewDate (0.25), EmployeeID (0.20). Succeeding Version (Version3): Random Forest, PerformanceScore (0.40), PerformanceReviewDate (0.30), PerformanceComments (0.20), EmployeeID (0.10).",6,Employee Productivity Model Version2
+57,What changes in algorithm and top_features are observed between Financial Health Model Version3 and its earlier version?,COMMON,"Financial Health Model Version3: Linear Regression, TransactionAmount (0.40), TransactionDate (0.30), TransactionType (0.20), AccountID (0.10). Earlier Version (Version2): Decision Tree, TransactionAmount (0.50), TransactionDate (0.30), AccountID (0.20).",6,Financial Health Model Version3
+58,How does the algorithm and top_features of Inventory Management Model Version2 differ from its latest version?,COMMON,"Inventory Management Model Version2: Neural Network, ItemQuantity (0.55), ItemName (0.25), ItemDescription (0.20). Latest Version (Version3): Linear Regression, ItemQuantity (0.40), ItemReorderLevel (0.30), ItemName (0.20), ProductID (0.10).",6,Inventory Management Model Version2
+59,What are the differences in algorithm and top_features between Sales Performance Model Version3 and its prior version?,COMMON,"Sales Performance Model Version3: Prophet, OrderTotalAmount (0.40), SalesOrderDate (0.30), ProductCategory (0.20), Region (0.10). Prior Version (Version2): Neural Network, OrderTotalAmount (0.45), ProductCategory (0.35), Region (0.20).",6,Sales Performance Model Version3
+60,How do the algorithm and top_features of Customer Satisfaction Model Version3 compare to its preceding version?,COMMON,"Customer Satisfaction Model Version3: Random Forest, FeedbackRating (0.40), FeedbackDate (0.30), FeedbackComments (0.20). Preceding Version (Version2): Logistic Regression, FeedbackRating (0.50), FeedbackDate (0.35), FeedbackComments (0.15).",6,Customer Satisfaction Model Version3
+61,What machine learning technique is utilized in Financial Health Model Version 1?,UNCOMMON,Neural Network,,
+62,What are the seasonal parameters utilized in the SARIMA model within Sales Performance Model Version 1?,UNCOMMON,"[1, 1, 1, 12]",,
+63,What forecasting method is implemented in Inventory Management Model Version 1?,UNCOMMON,ARIMA,,
+64,What machine learning technique is utilized in Employee Productivity Model Version 1?,UNCOMMON,Neural Network,,
+65,What is the maximum depth setting for the Decision Tree in Financial Health Model Version 2?,UNCOMMON,8,,
+66,How many layers does the neural network in Customer Satisfaction Model Version 1 have?,UNCOMMON,3 layers,,
+67,Which business group oversees the Inventory Management Report?,UNCOMMON,Inventory business group,,
+68,Which business group oversees the Financial Health Dashboard?,UNCOMMON,Finance business group,,
+69,Which business group oversees the Customer Satisfaction Survey Analysis?,UNCOMMON,Customer Service business group,,
+70,What are the ARIMA model parameters used in Inventory Management Model Version 1?,UNCOMMON,"[1, 1, 1]",,
+71,What solver is employed in the Logistic Regression model for Customer Satisfaction Model Version 2?,UNCOMMON,liblinear,,
+72,What columns are included in the input_data_elements for Sales Performance Model Version 3?,UNCOMMON,"SalesOrderDate, OrderTotalAmount, Region, ProductCategory",,
+73,Which version of Sales Performance Model utilizes the Prophet forecasting algorithm?,UNCOMMON,Sales Performance Model Version 3,,
+74,What is the database type of the ExecutiveManagementDatabase?,UNCOMMON,Relational,,
+75,What are the columns in the Departments table of the ExecutiveManagementDatabase?,UNCOMMON,"DepartmentID, DepartmentName, ManagerID, DepartmentBudget, Objectives, DepartmentLocation",,
+76,What are the data types of columns in the Accounts table of the FinanceAndAccountingDatabase?,UNCOMMON,"AccountID (integer), AccountType (string), AccountBalance (float), AccountDateOpened (date)",,
+77,What input data elements are necessary for Financial Health Model Version 3?,UNCOMMON,"TransactionID, AccountID, TransactionType, TransactionAmount, TransactionDate",,
+78,What levels of access does data.scientist@company.com have in the Customer Satisfaction Model Version3?,UNCOMMON,Read access,,
+79,What is the neuron configuration in the second layer of the Inventory Management Model Version 2?,UNCOMMON,64 neurons,,
+80,Which dashboard utilizes outputs from Sales Performance Model Version 2?,UNCOMMON,Sales Performance Dashboard,,
+81,What forecasting method is applied in Sales Performance Model Version 3?,UNCOMMON,Prophet,,
+82,How many versions of the Employee Productivity Prediction Model exist?,UNCOMMON,3 versions,,
+83,Which dashboard is linked with the Sales business group?,UNCOMMON,Sales Performance Dashboard,,
+84,What are the ARIMA model parameters in Inventory Management Model Version 1?,UNCOMMON,"[1, 1, 1]",,
+85,What columns are present in the Strategic Initiatives table of the ExecutiveManagementDatabase?,UNCOMMON,"InitiativeID, InitiativeTitle, InitiativeDescription, InitiativeStartDate, InitiativeEndDate, InitiativeBudget, DepartmentID",,
+86,How many versions of the Sales Performance Prediction Model are there?,UNCOMMON,3 versions,,
+87,What role does sales.director@company.com play in the Sales Performance Dashboard?,UNCOMMON,Sales Director,,
+88,Which business group is associated with the Employee Productivity Report?,UNCOMMON,Human Resources,,
+89,What is the max depth setting in the Random Forest model of Customer Satisfaction Model Version 3?,UNCOMMON,10,,
+90,How many neurons are configured in the first layer of the neural network in Inventory Management Model Version 2?,UNCOMMON,128 neurons,,
+91,Who is the owner of Sales Performance Dashboard?,UNCOMMON,Sales Director,,
+92,Who is the owner of Inventory Management Report?,UNCOMMON,Inventory Manager,,
+93,Who is the owner of Financial Health Dashboard?,UNCOMMON,CFO,,
+94,Who is the owner of Employee Productivity Report?,UNCOMMON,HR Director,,
+95,Who is the owner of Customer Satisfaction Survey Analysis Report?,UNCOMMON,Customer Service Director,,
+96,Who maintains the Sales Performance Dashboard?,UNCOMMON,Sales Data Analyst,,
+97,Who maintains the Inventory Management Report?,UNCOMMON,Supply Chain Analyst,,
+98,Who maintains the Financial Health Dashboard?,UNCOMMON,Financial Analyst,,
+99,Who maintains the Employee Productivity Report?,UNCOMMON,HR Analyst,,
+100,Who maintains the Customer Satisfaction Survey Analysis Report?,UNCOMMON,Customer Insights Analyst,,
+101,What is the capital of France?,NONE,Paris,,
+102,How long is the Great Wall of China?,NONE,"Approximately 21,196 kilometers (13,171 miles)",,
+103,Who won the Nobel Prize in Physics in 2020?,NONE,"Roger Penrose, Reinhard Genzel, and Andrea Ghez",,
+104,What is the boiling point of water at sea level?,NONE,100 degrees Celsius (212 degrees Fahrenheit),,
+105,How many planets are there in the Solar System?,NONE,Eight,,
+106,What is the tallest mountain in the world?,NONE,Mount Everest,,
+107,"Who is the author of ""To Kill a Mockingbird""?",NONE,Harper Lee,,
+108,What is the fastest land animal?,NONE,The cheetah,,
+109,How many states are there in the United States?,NONE,50,,
+110,What is the chemical formula for water?,NONE,H2O,,
+111,Who painted the Mona Lisa?,NONE,Leonardo da Vinci,,
+112,What is the currency of Japan?,NONE,Japanese yen,,
+113,How many continents are there on Earth?,NONE,Seven,,
+114,"Who wrote the play ""Hamlet""?",NONE,William Shakespeare,,
+115,What is the largest ocean on Earth?,NONE,The Pacific Ocean,,

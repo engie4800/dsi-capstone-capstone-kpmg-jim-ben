@@ -1,0 +1,20 @@
+ID;Questions;Type;CorrectAnswer;QueryID;ParameterExtracted;GeneratedCypherQuery;;;;;;;;;;;;;;;;;;;;;
+1;Which downstream fields are influenced by the AccountBalance column in the Accounts table?;COMMON;AccountBalance influences the Cash Flow Trends field in the Financial Health Dashboard.;1;AccountBalance;;;;;;;;;;;;;;;;;;;;;;
+2;What are the performance metrics of the latest version for the Employee Productivity Model?;COMMON;Employee Productivity Model (Version 3): Accuracy (0.88), Precision (0.85), Recall (0.83).;2;Employee Productivity Model;;;;;;;;;;;;;;;;;;;;;;
+3;What data contributes to the Monthly Sales Trend field in the Sales Performance Dashboard?;COMMON;"""SalesOrderDate"" and ""OrderTotalAmount"" columns are upstream data for the ""monthly_sales_trend"" field in the Sales Performance Dashboard.";3;Monthly Sales Trend;;;;;;;;;;;;;;;;;;;;;;
+4;How many nodes upstream is the datasource for the Monthly Sales Trend field in the Sales Performance Dashboard?;COMMON;2;4;Monthly Sales Trend;;;;;;;;;;;;;;;;;;;;;;
+5;How was the Monthly Sales Trend field in the Sales Performance Dashboard calculated?;COMMON;The Monthly Sales Trend field is calculated by aggregating 'OrderTotalAmount' by month based on 'SalesOrderDate'.;5;Monthly Sales Trend;;;;;;;;;;;;;;;;;;;;;;
+6;"What are the differences in algorithm and top_features between ""Employee Productivity Model Version3"" and its previous version?";COMMON;Employee Productivity Model Version3: Random Forest, PerformanceScore (0.40), PerformanceReviewDate (0.30), PerformanceComments (0.20), EmployeeID (0.10). Previous Version (Version2): Decision Tree, PerformanceScore (0.55), PerformanceReviewDate (0.25), EmployeeID (0.20).;6;Employee Productivity Model Version3;;;;;;;;;;;;;;;;;;;;;;
+7;What type of algorithm is used in Financial Health Model Version 1?;UNCOMMON;Neural Network;;;"MATCH (m:Model {name: ""Financial Health Model Version1""})
+RETURN m.model_parameters.activation_function AS ActivationFunction";;;;;;;;;;;;;;;;;;;;;
+8;What are the performance metrics used in Customer Satisfaction Model Version 3?;UNCOMMON;Mean absolute error, mean percentage error, root mean squared error;;;"MATCH (m:Model {name: ""Customer Satisfaction Model Version3""})
+RETURN m.model_parameters.trees AS Trees";;;;;;;;;;;;;;;;;;;;;
+9;What are the seasonal order parameters for the SARIMA model in Sales Performance Model Version 1?;UNCOMMON;[1, 1, 1, 12];;;"MATCH (m:Model {name: ""Sales Performance Model Version1""})
+RETURN m.model_parameters.order AS Order, m.model_parameters.seasonal_order AS SeasonalOrder";;;;;;;;;;;;;;;;;;;;;
+10;What algorithm is employed in the Employee Productivity Model Version 2?;UNCOMMON;Decision Tree;;;"MATCH (m:Model {name: ""Employee Productivity Model Version2""})
+UNWIND m.input_data_elements AS input
+RETURN input.columns AS Columns";;;;;;;;;;;;;;;;;;;;;
+11;What is the capital of France?;NONE;;;;;;;;;;;;;;;;;;;;;;;;;
+12;How long is the Great Wall of China?;NONE;;;;;;;;;;;;;;;;;;;;;;;;;
+13;Who won the Nobel Prize in Physics in 2020?;NONE;;;;;;;;;;;;;;;;;;;;;;;;;
+14;What is the boiling point of water at sea level?;NONE;;;;;;;;;;;;;;;;;;;;;;;;;

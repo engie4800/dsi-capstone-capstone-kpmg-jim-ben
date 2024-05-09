@@ -82,43 +82,15 @@ Run any query to call OpenAI's completions API
 - RAG Chatbot
 
 Try asking the following questions:
-- Which users have access to the IT database and what are their roles?
-- Which report fields will be affected if FeedbackComments is changed?
-- What are the performance metrics of Customer Satisfaction Prediction Model, and what are its data element inputs?
-- What columns are upstream to the Top Performing Regions report field?
-- What model versions are upstream to the Predicted Satisfaction Score report field?
-
-TODO:
-- Remove negative words in prompt template
-- Question about fields in a report? Upstream data (column or model)? 2 queries where we ask model first and then columns?
-- Add StreamLit conversation flow
-
-- Handle fuzzy entity extraction (change the cypher query to make the partial match)
-- Add previous message response to successive request template?
-- Experiment with known questions that should map to RAG chatbot's base questions
-- Write a script to evaluate Cypher query generation and data retrieval
-- Experiment using other LLMs: Llama
-    - One LLM for intent matching, another one for Cypher query generation, last one for user response generation
-
-- How far upstream? And more context?
-- Focus more on report data upstream and downstream
-
-- Look into React prompting
-- If intent cannot be matched to base questions, create staged general workflow
-- Look into LangSmith for version tracking
-
-- Long term goals:
-    - Analyze latency time for steps
-    - Integrate neo4j graph visuals
-
-
-- Scripts:
-    - Intent matching
-    - Uncommon cypher query generation
-
-- Run the script:
-    - one template for intent matching and parameter extraction
-    - two template solution
+- What report fields are downstream of PerformanceScore column?
+- What are the performance metrics of Customer Satisfaction Prediction Model?
+- What data is upstream to the Sales Confidence Interval report field?
+- How many nodes upstream is the datasource for the Monthly Sales Trend field?
+- How was the Sales Confidence Interval report field calculated?
+- What is the difference between the latest version and the previous version of the Employee Productivity Prediction Model?
+- What are the top features of the the Inventory Management Prediction Model?
+- Tell me about the latest version of the Financial Health Prediction Model?
+- How many versions of the Sales Performance Prediction Model are there?
 
 ## Resources
 

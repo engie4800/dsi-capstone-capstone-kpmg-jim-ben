@@ -1,0 +1,65 @@
+{
+  "database_name": "Marketing_Database",
+  "type": "relational",
+  "tables": [
+    {
+      "name": "Campaigns",
+      "columns": [
+        {"name": "CampaignID", "type": "integer"},
+        {"name": "CampaignTitle", "type": "string"},
+        {"name": "CampaignStartDate", "type": "date"},
+        {"name": "CampaignEndDate", "type": "date"},
+        {"name": "CampaignBudget", "type": "float"},
+        {"name": "CampaignROI", "type": "float"}
+      ]
+    },
+    {
+      "name": "Social Media Posts",
+      "columns": [
+        {"name": "PostID", "type": "integer"},
+        {"name": "CampaignID", "type": "integer"},
+        {"name": "PostPlatform", "type": "string"},
+        {"name": "SocialMediaPostDate", "type": "date"},
+        {"name": "PostEngagementMetrics", "type": "string"}
+      ]
+    },
+    {
+      "name": "Market Research",
+      "columns": [
+        {"name": "ResearchID", "type": "integer"},
+        {"name": "ResearchDescription", "type": "string"},
+        {"name": "MarketResearchDate", "type": "date"},
+        {"name": "ResearchFindings", "type": "string"}
+      ]
+    },
+    {
+      "name": "Public Relations Events",
+      "columns": [
+        {"name": "EventID", "type": "integer"},
+        {"name": "EventTitle", "type": "string"},
+        {"name": "EventDate", "type": "date"},
+        {"name": "EventLocation", "type": "string"},
+        {"name": "EventOutcome", "type": "string"}
+      ]
+    }
+  ],
+  "business_group": "Marketing and Public Relations",
+  "key_contact_information": [
+    {
+      "name": "Emma Jones",
+      "email": "emma.jones@marketingpr.com"
+    }
+  ],
+  "entitlements": [
+    {
+      "user_name": "marketing_manager",
+      "user_account": "mkt_manager@marketingpr.com",
+      "entitlements": ["read", "write", "admin"]
+    },
+    {
+      "user_name": "pr_coordinator",
+      "user_account": "pr_coord@marketingpr.com",
+      "entitlements": ["read", "write"]
+    }
+  ]
+}

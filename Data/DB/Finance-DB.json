@@ -1,0 +1,63 @@
+{
+  "database_name": "Finance_Database",
+  "type": "relational",
+  "tables": [
+    {
+      "name": "Accounts",
+      "columns": [
+        {"name": "AccountID", "type": "integer"},
+        {"name": "AccountType", "type": "string"},
+        {"name": "AccountBalance", "type": "float"},
+        {"name": "AccountDateOpened", "type": "date"}
+      ]
+    },
+    {
+      "name": "Transactions",
+      "columns": [
+        {"name": "TransactionID", "type": "integer"},
+        {"name": "BudgetID", "type": "integer"}, 
+        {"name": "AccountID", "type": "integer"},
+        {"name": "TransactionType", "type": "string"},
+        {"name": "TransactionAmount", "type": "float"},
+        {"name": "TransactionDate", "type": "date"}
+      ]
+    },
+    {
+      "name": "Budgets",
+      "columns": [
+        {"name": "BudgetID", "type": "integer"},
+        {"name": "DepartmentID", "type": "integer"},
+        {"name": "FiscalYear", "type": "integer"},
+        {"name": "BudgetAmount", "type": "float"}
+      ]
+    },
+    {
+      "name": "Financial Reports",
+      "columns": [
+        {"name": "ReportID", "type": "integer"},
+        {"name": "ReportType", "type": "string"},
+        {"name": "ReportPeriod", "type": "string"},
+        {"name": "ReportFile", "type": "string"}
+      ]
+    }
+  ],
+  "business_group": "Finance and Accounting",
+  "key_contact_information": [
+    {
+      "name": "Jane Smith",
+      "email": "jane.smith@finance.com"
+    }
+  ],
+  "entitlements": [
+    {
+      "user_name": "finance_analyst",
+      "user_account": "finance_analyst@finance.com",
+      "entitlements": ["read", "write"]
+    },
+    {
+      "user_name": "accounting_specialist",
+      "user_account": "account_specialist@finance.com",
+      "entitlements": ["read"]
+    }
+  ]
+}

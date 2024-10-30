@@ -1,0 +1,58 @@
+{
+  "database_name": "Customer_Service_Database",
+  "type": "relational",
+  "tables": [
+    {
+      "name": "Service Tickets",
+      "columns": [
+        {"name": "TicketID", "type": "integer"},
+        {"name": "CustomerID", "type": "integer"},
+        {"name": "IssueDescription", "type": "string"},
+        {"name": "ServiceTicketOpenDate", "type": "date"},
+        {"name": "ServiceTicketCloseDate", "type": "date"},
+        {"name": "TicketStatus", "type": "string"},
+        {"name": "TicketResolution", "type": "string"}
+      ]
+    },
+    {
+      "name": "Customer Feedback",
+      "columns": [
+        {"name": "FeedbackID", "type": "integer"},
+        {"name": "CustomerID", "type": "integer"},
+        {"name": "FeedbackDate", "type": "date"},
+        {"name": "FeedbackRating", "type": "integer"},
+        {"name": "FeedbackComments", "type": "string"}
+      ]
+    },
+    {
+      "name": "Warranty Claims",
+      "columns": [
+        {"name": "ClaimID", "type": "integer"},
+        {"name": "CustomerID", "type": "integer"},
+        {"name": "ClaimedProductID", "type": "integer"},
+        {"name": "IssueDescription", "type": "string"},
+        {"name": "WarrantyClaimDate", "type": "date"},
+        {"name": "ClaimResolutionStatus", "type": "string"}
+      ]
+    }
+  ],
+  "business_group": "Customer Service",
+  "key_contact_information": [
+    {
+      "name": "Mike Brown",
+      "email": "mike.brown@customerservicecompany.com"
+    }
+  ],
+  "entitlements": [
+    {
+      "user_name": "customer_service_manager",
+      "user_account": "cus_manager@customerservicecompany.com",
+      "entitlements": ["read", "write", "admin"]
+    },
+    {
+      "user_name": "customer_service_analyst",
+      "user_account": "cus_analyst@customerservicecompany.com",
+      "entitlements": ["read"]
+    }
+  ]
+}

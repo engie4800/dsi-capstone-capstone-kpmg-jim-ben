@@ -1,0 +1,93 @@
+{
+  "name": "Employee Productivity Report",
+  "sections": [
+    {
+      "name": "Productivity Analysis",
+      "fields": [
+        {
+          "id": "average_productivity_by_department",
+          "name": "Average Productivity by Department",
+          "source": "columns",
+          "sourcedata": ["PerformanceID", "EmployeeID", "PerformanceReviewDate", "PerformanceScore"],
+          "generatedFrom": "Calculating the mean 'PerformanceScore' from performance reviews occurring on 'PerformanceReviewDate' for each department."
+        },
+        {
+          "id": "top_performers",
+          "name": "Top Performers",
+          "source": "columns",
+          "sourcedata": ["EmployeeID", "DepartmentID", "EmployeeName", "PerformanceScore"],
+          "generatedFrom": "Identifying employees with the highest 'PerformanceScore' within each 'DepartmentID'."
+        }
+      ]
+    },
+    {
+      "name": "Training Impact on Productivity",
+      "fields": [
+        {
+          "id": "training_hours",
+          "name": "Training Hours",
+          "source": "columns",
+          "sourcedata": ["ProgramID", "TrainingDate", "TrainingHours"],
+          "generatedFrom": "Compiling the total hours of training conducted on 'TrainingDate' for each 'ProgramID'."
+        },
+        {
+          "id": "productivity_improvement",
+          "name": "Productivity Improvement",
+          "source": "columns",
+          "sourcedata": ["PerformanceID", "EmployeeID", "PerformanceScore"],
+          "generatedFrom": "Comparing 'PerformanceScore' before and after training sessions to measure improvement."
+        }
+      ]
+    },
+    {
+      "name": "Productivity Prediction",
+      "fields": [
+        {
+          "id": "predicted_productivity_score",
+          "name": "Predicted Productivity Score",
+          "source": "model",
+          "source_id": "DE_predicted_productivity_score",
+          "generatedFrom": "Using machine learning models to forecast 'PerformanceScore' based on historical performance data."
+        },
+        {
+          "id": "factors_influencing_productivity",
+          "name": "Factors Influencing Productivity",
+          "source": "model",
+          "source_id": "DE_factors_influencing_productivity",
+          "generatedFrom": "Analyzing various metrics to identify factors that significantly affect employee productivity."
+        }
+      ]
+    }
+  ],
+  "business_group": "human_resources",
+  "users": [
+    {
+      "name": "HR Director",
+      "user_account": "hr.director@company.com",
+      "entitlement": ["read", "write"],
+      "role": "Report Owner",
+      "relationship": "Owner"
+    },
+    {
+      "name": "HR Analyst",
+      "user_account": "hr.analyst@company.com",
+      "entitlement": ["read", "write"],
+      "role": "Report Analyst",
+      "relationship": "Maintain"
+    },
+    {
+      "name": "Department Manager",
+      "user_account": "department.manager@company.com",
+      "entitlement": ["read"],
+      "role": "Report User",
+      "relationship": "Entitled_On"
+    },
+    {
+      "name": "Training Coordinator",
+      "user_account": "training.coordinator@company.com",
+      "entitlement": ["read"],
+      "role": "Report User",
+      "relationship": "Entitled_On"
+    }
+  ]
+}

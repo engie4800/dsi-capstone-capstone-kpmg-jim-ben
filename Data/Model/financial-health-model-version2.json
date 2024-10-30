@@ -1,0 +1,66 @@
+{
+  "name": "Financial Health Prediction Model Version2",
+  "type": "object",
+  "properties": {
+    "model_id": "model_financial_health_003",
+    "version_of": {
+      "name": "Financial Health Prediction Model",
+      "model_metadata": {
+        "created_at": "2023-03-01T00:00:00Z",
+        "description": "This model predicts financial health metrics based on transaction and account data.",
+        "type": "Machine Learning Classification"
+      },
+      "model_id": "model_financial_health_002"
+    },
+    "version": 2,
+    "latest_version": "False",
+    "input_data_elements": [
+      {
+        "name": "financial_data",
+        "columns": ["TransactionAmount", "TransactionDate", "AccountID"],
+        "generatedFrom": "Gathering financial data, including the transaction amount ('TransactionAmount'), the date of the transaction ('TransactionDate'), and the account identifier ('AccountID')."
+      }
+    ],
+    "output_data_element": [
+      {
+        "id": "DE_predicted_revenue_for_next_quarter",
+        "name": "Predicted Revenue for Next Quarter"
+      }
+    ],
+    "metadata": {
+      "created_at": "2023-03-15T00:00:00Z",
+      "type": "Machine Learning Classification"
+    },
+    "model_parameters": {
+      "algorithm": "Decision Tree",
+      "max_depth": 8,
+      "min_samples_split": 4
+    },
+    "top_features": {
+      "TransactionAmount": 0.50,
+      "TransactionDate": 0.30,
+      "AccountID": 0.20
+    },
+    "performance_metrics": {
+      "accuracy": 0.85,
+      "precision": 0.82,
+      "recall": 0.80
+    },
+    "users": [
+      {
+        "name": "CFO",
+        "user_account": "cfo@company.com",
+        "entitlement": ["read", "write"],
+        "role": "Model Owner",
+        "relationship": "Owner"
+      },
+      {
+        "name": "Financial Analyst",
+        "user_account": "financial.analyst@company.com",
+        "entitlement": ["read"],
+        "role": "Model User",
+        "relationship": "Viewer"
+      }
+    ]
+  }
+}

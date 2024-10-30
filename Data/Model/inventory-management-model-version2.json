@@ -1,0 +1,67 @@
+{
+  "name": "Inventory Management Prediction Model Version2",
+  "type": "object",
+  "properties": {
+    "model_id": "model_inventory_management_003",
+    "version_of": {
+      "name": "Inventory Management Prediction Model",
+      "model_metadata": {
+        "created_at": "2023-03-01T00:00:00Z",
+        "description": "This model predicts inventory levels and demand based on historical inventory data.",
+        "type": "Deep Learning Regression"
+      },
+      "model_id": "model_inventory_management_002"
+    },
+    "version": 2,
+    "latest_version": "False",
+    "input_data_elements": [
+      {
+        "name": "inventory_data",
+        "columns": ["ItemName", "ItemDescription", "ItemQuantity"],
+        "generatedFrom": "Gathering information on inventory items, including the name of the item ('ItemName'), a description of the item ('ItemDescription'), and the quantity in stock ('ItemQuantity')."
+      }
+    ],
+    "output_data_element": [
+      {
+        "id": "DE_predicted_demand_for_products",
+        "name": "Predicted Demand for Products"
+      }
+    ],
+    "metadata": {
+      "created_at": "2023-03-15T00:00:00Z",
+      "type": "Deep Learning Regression"
+    },
+    "model_parameters": {
+      "algorithm": "Neural Network",
+      "layers": 2,
+      "neurons_per_layer": [128, 64],
+      "activation_function": "relu"
+    },
+    "top_features": {
+      "ItemQuantity": 0.55,
+      "ItemName": 0.25,
+      "ItemDescription": 0.20
+    },
+    "performance_metrics": {
+      "mean_absolute_error": 0.68,
+      "mean_percentage_error": 0.53,
+      "root_mean_squared_error": 0.58
+    },
+    "users": [
+      {
+        "name": "Inventory Manager",
+        "user_account": "inventory.manager@company.com",
+        "entitlement": ["read", "write"],
+        "role": "Model Owner",
+        "relationship": "Owner"
+      },
+      {
+        "name": "Supply Chain Analyst",
+        "user_account": "supply.chain.analyst@company.com",
+        "entitlement": ["read"],
+        "role": "Model User",
+        "relationship": "Viewer"
+      }
+    ]
+  }
+}

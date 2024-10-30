@@ -1,0 +1,67 @@
+{
+  "database_name": "Sales_Database",
+  "type": "relational",
+  "tables": [
+    {
+      "name": "Sales Orders",
+      "columns": [
+        {"name": "OrderID", "type": "integer"},
+        {"name": "DepartmentID", "type": "integer"},  
+        {"name": "CustomerID", "type": "integer"},
+        {"name": "SalesOrderDate", "type": "date"},
+        {"name": "OrderTotalAmount", "type": "float"},
+        {"name": "OrderStatus", "type": "string"}
+      ],
+      "primary_key": "OrderID"
+    },
+    {
+      "name": "Order Details",
+      "columns": [
+        {"name": "OrderID", "type": "integer"},
+        {"name": "ProductID", "type": "integer"},  
+        {"name": "ItemQuantity", "type": "integer"},
+        {"name": "ItemPrice", "type": "float"}
+      ]
+    },
+    {
+      "name": "Customers",
+      "columns": [
+        {"name": "CustomerID", "type": "integer"},
+        {"name": "CustomerName", "type": "string"},
+        {"name": "CustomerEmail", "type": "string"},
+        {"name": "CustomerLoyaltyPoints", "type": "integer"}
+      ],
+      "primary_key": "CustomerID"
+    },
+    {
+      "name": "Sales Targets",
+      "columns": [
+        {"name": "TargetID", "type": "integer"},
+        {"name": "DepartmentID", "type": "integer"},
+        {"name": "SalesPeriod", "type": "string"},
+        {"name": "TargetAmount", "type": "float"},
+        {"name": "AchievedAmount", "type": "float"}
+      ],
+      "primary_key": "TargetID"
+    }
+  ],
+  "business_group": "sales",
+  "key_contact_information": [
+    {
+      "name": "Bob Smith",
+      "email": "bob.smith@salescompany.com"
+    }
+  ],
+  "entitlements": [
+    {
+      "user_name": "sales_manager",
+      "user_account": "sales_manager@salescompany.com",
+      "entitlements": ["read", "write"]
+    },
+    {
+      "user_name": "sales_analyst",
+      "user_account": "sales_analyst@salescompany.com",
+      "entitlements": ["read"]
+    }
+  ]
+}

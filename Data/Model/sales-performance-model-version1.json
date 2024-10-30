@@ -1,0 +1,63 @@
+{
+  "name": "Sales Performance Prediction Model Version1",
+  "type": "object",
+  "properties": {
+    "model_id": "model_sales_002",
+    "version_of": {
+      "name": "Sales Performance Prediction Model",
+      "model_metadata": {
+        "created_at": "2022-03-01T00:00:00Z",
+        "description": "This model predicts sales performance based on historical sales data and market trends.",
+        "type": "Time Series Forecasting"
+      },
+      "model_id": "model_sales_001"
+    },
+    "version": 1,
+    "latest_version": "False",
+    "input_data_elements": [
+      {
+        "name": "sales_data",
+        "columns": [
+          "SalesOrderDate",
+          "OrderTotalAmount",
+          "Region"
+        ],
+        "generatedFrom": "Compiling sales data, including the date of the sale ('SalesOrderDate'), the total amount of the sale ('OrderTotalAmount'), and the region where the sale occurred ('Region')."
+      }
+    ],
+    "output_data_element": [
+      {
+        "id": "DE_predicted_sales_for_next_quarter",
+        "name": "Predicted Sales for Next Quarter"
+      }
+    ],
+    "metadata": {
+      "created_at": "2022-03-15T00:00:00Z",
+      "type": "Time Series Forecasting"
+    },
+    "model_parameters": {
+      "algorithm": "SARIMA",
+      "order": [1, 1, 1],
+      "seasonal_order": [1, 1, 1, 12]
+    },
+    "top_features": {
+      "SalesOrderDate": 0.50,
+      "OrderTotalAmount": 0.30,
+      "Region": 0.20
+    },
+    "performance_metrics": {
+      "mean_absolute_error": 10500,
+      "mean_percentage_error": 0.12,
+      "root_mean_squared_error": 15500
+    },
+    "users": [
+      {
+        "name": "Sales Director",
+        "user_account": "sales.director@company.com",
+        "entitlement": ["read", "write"],
+        "role": "Model Owner",
+        "relationship": "Owner"
+      }
+    ]
+  }
+}

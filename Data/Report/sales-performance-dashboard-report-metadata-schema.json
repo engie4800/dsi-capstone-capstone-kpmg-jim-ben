@@ -1,0 +1,112 @@
+{
+  "name": "Sales Performance Dashboard",
+  "sections": [
+    {
+      "name": "Sales Trend Analysis",
+      "fields": [
+        {
+          "id": "monthly_sales_trend",
+          "name": "Monthly Sales Trend",
+          "source": "columns",
+          "sourcedata": ["SalesOrderDate", "OrderTotalAmount"],
+          "generatedFrom": "Aggregating 'OrderTotalAmount' by month based on 'SalesOrderDate' to observe sales trends."
+        },
+        {
+          "id": "year_over_year_growth",
+          "name": "Year-over-Year Growth",
+          "source": "columns",
+          "sourcedata": ["OrderID", "SalesOrderDate", "OrderTotalAmount"],
+          "generatedFrom": "Comparing 'OrderTotalAmount' month over month for the current and previous year using 'SalesOrderDate' to calculate growth."
+        }
+      ]
+    },
+    {
+      "name": "Regional Sales Breakdown",
+      "fields": [
+        {
+          "id": "sales_by_region",
+          "name": "Sales by Region",
+          "source": "columns",
+          "sourcedata": ["OrderID", "SalesOrderDate", "OrderTotalAmount"],
+          "generatedFrom": "Compiling 'OrderTotalAmount' by 'SalesOrderDate' to analyze sales performance by region."
+        },
+        {
+          "id": "top_performing_regions",
+          "name": "Top Performing Regions",
+          "source": "columns",
+          "sourcedata": ["OrderID", "SalesOrderDate", "OrderTotalAmount", "Region"],
+          "generatedFrom": "Identifying regions with the highest 'OrderTotalAmount' for a set period and categorizing them using 'Region'."
+        }
+      ]
+    },
+    {
+      "name": "Product Category Performance",
+      "fields": [
+        {
+          "id": "sales_by_product_category",
+          "name": "Sales by Product Category",
+          "source": "columns",
+          "sourcedata": ["OrderID", "ProductID", "ItemQuantity", "ItemPrice"],
+          "generatedFrom": "Multiplying 'ItemQuantity' and 'ItemPrice' to calculate sales per 'ProductID' and segmenting by categories."
+        },
+        {
+          "id": "category_growth_rate",
+          "name": "Category Growth Rate",
+          "source": "columns",
+          "sourcedata": ["ProductID", "ProductCategory"],
+          "generatedFrom": "Calculating the rate of sales growth by 'ProductCategory' based on 'ProductID' over different periods."
+        }
+      ]
+    },
+    {
+      "name": "Sales Forecasting",
+      "fields": [
+        {
+          "id": "predicted_sales_for_next_quarter",
+          "name": "Predicted Sales for Next Quarter",
+          "source": "model",
+          "source_id": "DE_predicted_sales_for_next_quarter",
+          "generatedFrom": "Forecasting future sales using a Prophet model trained on historical data, including 'SalesOrderDate' and 'OrderTotalAmount'."
+        },
+        {
+          "id": "sales_confidence_interval",
+          "name": "Sales Confidence Interval",
+          "source": "model",
+          "source_id": "DE_sales_confidence_interval",
+          "generatedFrom": "Calculating a confidence interval for the sales forecast, indicating the probable range of the 'OrderTotalAmount'."
+        }
+      ]
+    }
+  ],
+  "business_group": "sales",
+  "users": [
+    {
+      "name": "Sales Director",
+      "user_account": "sales.director@company.com",
+      "entitlement": ["read", "write"],
+      "role": "Report Owner",
+      "relationship": "Owner"
+    },
+    {
+      "name": "Sales Data Analyst",
+      "user_account": "sales.analyst@company.com",
+      "entitlement": ["read", "write"],
+      "role": "Report Analyst",
+      "relationship": "Maintain"
+    },
+    {
+      "name": "Regional Manager",
+      "user_account": "regional.manager@company.com",
+      "entitlement": ["read"],
+      "role": "Report User",
+      "relationship": "Entitled_On"
+    },
+    {
+      "name": "Product Manager",
+      "user_account": "product.manager@company.com",
+      "entitlement": ["read"],
+      "role": "Report User",
+      "relationship": "Entitled_On"
+    }
+  ]
+}

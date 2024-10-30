@@ -1,0 +1,57 @@
+{
+  "database_name": "R&D_Database",
+  "type": "relational",
+  "tables": [
+    {
+      "name": "Research Projects",
+      "columns": [
+        {"name": "ProjectID", "type": "integer"},
+        {"name": "ResearchProjectTitle", "type": "string"},
+        {"name": "ResearchDescription", "type": "string"},
+        {"name": "ResearchProjectStartDate", "type": "date"},
+        {"name": "ResearchProjectEndDate", "type": "date"},
+        {"name": "ResearchBudget", "type": "float"},
+        {"name": "ResearchOutcome", "type": "string"}
+      ]
+    },
+    {
+      "name": "Innovation Metrics",
+      "columns": [
+        {"name": "InnovationMetricID", "type": "integer"},
+        {"name": "ProjectID", "type": "integer"},
+        {"name": "InnovationMetric", "type": "string"},
+        {"name": "InnovationTarget", "type": "float"},
+        {"name": "InnovationActual", "type": "float"}
+      ]
+    },
+    {
+      "name": "Patents",
+      "columns": [
+        {"name": "PatentID", "type": "integer"},
+        {"name": "PatentTitle", "type": "string"},
+        {"name": "PatentRegistrationDate", "type": "date"},
+        {"name": "PatentExpiryDate", "type": "date"},
+        {"name": "PatentStatus", "type": "string"}
+      ]
+    }
+  ],
+  "business_group": "Research and Development",
+  "key_contact_information": [
+    {
+      "name": "Dr. Emily Clarke",
+      "email": "emily.clarke@rndcompany.com"
+    }
+  ],
+  "entitlements": [
+    {
+      "user_name": "rnd_manager",
+      "user_account": "rnd_manager@rndcompany.com",
+      "entitlements": ["read", "write"]
+    },
+    {
+      "user_name": "research_analyst",
+      "user_account": "rnd_analyst@rndcompany.com",
+      "entitlements": ["read", "write"]
+    }
+  ]
+}

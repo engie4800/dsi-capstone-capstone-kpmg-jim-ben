@@ -1,0 +1,74 @@
+{
+  "name": "Customer Satisfaction Prediction Model Version3",
+  "type": "object",
+  "properties": {
+    "model_id": "model_customer_satisfaction_004",
+    "version_of": {
+      "name": "Customer Satisfaction Prediction Model",
+      "model_metadata": {
+        "created_at": "2024-03-01T00:00:00Z",
+        "description": "This model predicts customer satisfaction based on survey responses and feedback data.",
+        "type": "Machine Learning Regression"
+      },
+      "model_id": "model_customer_satisfaction_003"
+    },
+    "version": 3,
+    "latest_version": "True",
+    "input_data_elements": [
+      {
+        "name": "customer_feedback_data",
+        "columns": ["FeedbackID", "CustomerID", "FeedbackDate", "FeedbackRating", "FeedbackComments"],
+        "generatedFrom": "Collecting feedback from customers, including a unique identifier ('FeedbackID'), customer identifier ('CustomerID'), the date of the feedback ('FeedbackDate'), the satisfaction rating ('FeedbackRating'), and any additional comments ('FeedbackComments')."
+      }
+    ],
+    "output_data_element": [
+      {
+        "id": "DE_predicted_satisfaction_score",
+        "name": "Predicted Satisfaction Score"
+      }
+    ],
+    "metadata": {
+      "created_at": "2024-03-01T00:00:00Z",
+      "type": "Machine Learning Regression"
+    },
+    "model_parameters": {
+      "algorithm": "Random Forest",
+      "trees": 100,
+      "max_depth": 10,
+      "min_samples_split": 2
+    },
+    "top_features": {
+      "FeedbackRating": 0.40,
+      "FeedbackDate": 0.30,
+      "FeedbackComments": 0.20
+    },
+    "performance_metrics": {
+      "mean_absolute_error": 0.70,
+      "mean_percentage_error": 0.55,
+      "root_mean_squared_error": 0.60
+    },
+    "users": [
+      {
+        "name": "Customer Service Director",
+        "user_account": "customer.service.director@company.com",
+        "entitlement": ["read", "write"],
+        "role": "Model Owner",
+        "relationship": "Owner"
+      },
+      {
+        "name": "Customer Insights Analyst",
+        "user_account": "customer.insights.analyst@company.com",
+        "entitlement": ["read", "write"],
+        "role": "Model User",
+        "relationship": "Maintain"
+      },
+      {
+        "name": "Data Scientist",
+        "user_account": "data.scientist@company.com",
+        "entitlement": ["read"],
+        "role": "Model User",
+        "relationship": "Viewer"
+      }
+    ]
+  }
+}

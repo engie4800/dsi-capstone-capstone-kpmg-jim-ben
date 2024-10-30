@@ -1,0 +1,90 @@
+{
+  "name": "Sales Performance Prediction Model Version3",
+  "type": "object",
+  "properties": {
+    "model_id": "model_sales_004",
+    "version_of": {
+      "name": "Sales Performance Prediction Model",
+      "model_metadata": {
+        "created_at": "2024-03-01T00:00:00Z",
+        "description": "This model predicts sales performance based on historical sales data and market trends.",
+        "type": "Machine Learning Regression"
+      },
+      "model_id": "model_sales_003"
+    },
+    "version": 3,
+    "latest_version": "True",
+    "input_data_elements": [
+      {
+        "name": "sales_data",
+        "columns": [
+          "SalesOrderDate",
+          "OrderTotalAmount",
+          "Region",
+          "ProductCategory"
+        ],
+        "generatedFrom": "Collecting comprehensive sales data, including the date of the sale ('SalesOrderDate'), the total amount of the sale ('OrderTotalAmount'), the region of the sale ('Region'), and the category of the product sold ('ProductCategory')."
+      }
+    ],
+    "output_data_element": [
+      {
+        "id": "DE_predicted_sales_for_next_quarter",
+        "name": "Predicted Sales for Next Quarter"
+      },
+      {
+        "id": "DE_sales_confidence_interval",
+        "name": "Confidence Interval"
+      }
+    ],
+    "metadata": {
+      "created_at": "2024-03-01T00:00:00Z",
+      "type": "Machine Learning Regression"
+    },
+    "model_parameters": {
+      "algorithm": "Prophet",
+      "seasonality_mode": "additive",
+      "changepoint_prior_scale": 0.05
+    },
+    "top_features": {
+      "OrderTotalAmount": 0.40,
+      "SalesOrderDate": 0.30,
+      "ProductCategory": 0.20,
+      "Region": 0.10
+    },
+    "performance_metrics": {
+      "mean_absolute_error": 10000,
+      "mean_percentage_error": 0.10,
+      "root_mean_squared_error": 15000
+    },
+    "users": [
+      {
+        "name": "Sales Director",
+        "user_account": "sales.director@company.com",
+        "entitlement": ["read", "write"],
+        "role": "Model Owner",
+        "relationship": "Owner"
+      },
+      {
+        "name": "Sales Analyst",
+        "user_account": "sales.analyst@company.com",
+        "entitlement": ["read", "write"],
+       "role": "Model User",
+        "relationship": "Maintain"
+      },
+      {
+        "name": "Data Scientist",
+        "user_account": "data.scientist@company.com",
+        "entitlement": ["read"],
+        "role": "Model User",
+        "relationship": "Viewer"
+      },
+      {
+        "name": "Product Manager",
+        "user_account": "product.manager@company.com",
+        "entitlement": ["read"],
+        "role": "Model User",
+        "relationship": "Viewer"
+      }
+    ]
+  }
+}

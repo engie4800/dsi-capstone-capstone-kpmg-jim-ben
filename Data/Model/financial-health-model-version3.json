@@ -1,0 +1,74 @@
+{
+  "name": "Financial Health Prediction Model Version3",
+  "type": "object",
+  "properties": {
+    "model_id": "model_financial_health_004",
+    "version_of": {
+      "name": "Financial Health Prediction Model",
+      "model_metadata": {
+        "created_at": "2024-03-01T00:00:00Z",
+        "description": "This model predicts financial health metrics based on transaction and account data.",
+        "type": "Machine Learning Regression"
+      },
+      "model_id": "model_financial_health_003"
+    },
+    "version": 3,
+    "latest_version": "True",
+    "input_data_elements": [
+      {
+        "name": "financial_data",
+        "columns": ["TransactionID", "AccountID", "TransactionType", "TransactionAmount", "TransactionDate"],
+        "generatedFrom": "Collecting detailed financial transaction data, including a unique identifier ('TransactionID'), account identifier ('AccountID'), transaction type ('TransactionType'), transaction amount ('TransactionAmount'), and transaction date ('TransactionDate')."
+      }
+    ],
+    "output_data_element": [
+      {
+        "id": "DE_revenue_confidence_interval",
+        "name": "Confidence Interval"
+      }
+    ],
+    "metadata": {
+      "created_at": "2024-03-01T00:00:00Z",
+      "type": "Machine Learning Regression"
+    },
+    "model_parameters": {
+      "algorithm": "Linear Regression",
+      "fit_intercept": true,
+      "normalize": false
+    },
+    "top_features": {
+      "TransactionAmount": 0.40,
+      "TransactionDate": 0.30,
+      "TransactionType": 0.20,
+      "AccountID": 0.10
+    },
+    "performance_metrics": {
+      "mean_absolute_error": 5,
+      "mean_squared_error": 10,
+      "r_squared": 0.80
+    },
+    "users": [
+      {
+        "name": "CFO",
+        "user_account": "cfo@company.com",
+        "entitlement": ["read", "write"],
+        "role": "Model Owner",
+        "relationship": "Owner"
+      },
+      {
+        "name": "Financial Analyst",
+        "user_account": "financial.analyst@company.com",
+        "entitlement": ["read", "write"],
+        "role": "Model User",
+        "relationship": "Maintain"
+      },
+      {
+        "name": "Data Scientist",
+        "user_account": "data.scientist@company.com",
+        "entitlement": ["read"],
+        "role": "Model User",
+        "relationship": "Viewer"
+      }
+    ]
+  }
+}

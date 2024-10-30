@@ -1,0 +1,54 @@
+{
+  "database_name": "Operations_Database",
+  "type": "relational",
+  "tables": [
+    {
+      "name": "Suppliers",
+      "columns": [
+        {"name": "SupplierID", "type": "integer"},
+        {"name": "SupplierName", "type": "string"},
+        {"name": "SupplierContactInfo", "type": "string"},
+        {"name": "SupplierLeadTime", "type": "integer"}
+      ]
+    },
+    {
+      "name": "Product Inventory",
+      "columns": [
+        {"name": "ProductID", "type": "integer"},
+        {"name": "ItemName", "type": "string"},
+        {"name": "ItemDescription", "type": "string"},
+        {"name": "ItemQuantity", "type": "integer"},
+        {"name": "SupplierID", "type": "integer"},
+        {"name": "ItemReorderLevel", "type": "integer"}
+      ]
+    },
+    {
+      "name": "Shipments",
+      "columns": [
+        {"name": "ShipmentID", "type": "integer"},
+        {"name": "SupplierID", "type": "integer"},
+        {"name": "ShipmentReceivedDate", "type": "date"},
+        {"name": "ShipmentStatus", "type": "string"}
+      ]
+    }
+  ],
+  "business_group": "Operations",
+  "key_contact_information": [
+    {
+      "name": "Alex Taylor",
+      "email": "alex.taylor@operations.com"
+    }
+  ],
+  "entitlements": [
+    {
+      "user_name": "operations_manager",
+      "user_account": "ops_manager@operations.com",
+      "entitlements": ["read", "write"]
+    },
+    {
+      "user_name": "inventory_specialist",
+      "user_account": "inventory_spec@operations.com",
+      "entitlements": ["read"]
+    }
+  ]
+}

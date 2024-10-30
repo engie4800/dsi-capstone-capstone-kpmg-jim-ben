@@ -1,0 +1,71 @@
+{
+  "name": "Sales Performance Prediction Model Version2",
+  "type": "object",
+  "properties": {
+    "model_id": "model_sales_003",
+    "version_of": {
+      "name": "Sales Performance Prediction Model",
+      "model_metadata": {
+        "created_at": "2023-03-01T00:00:00Z",
+        "description": "This model predicts sales performance based on historical sales data and market trends.",
+        "type": "Deep Learning Regression"
+      },
+      "model_id": "model_sales_002"
+    },
+    "version": 2,
+    "latest_version": "False",
+    "input_data_elements": [
+      {
+        "name": "sales_data",
+        "columns": [
+          "OrderTotalAmount",
+          "Region",
+          "ProductCategory"
+        ],
+        "generatedFrom": "Gathering sales data, including the total amount of each sale ('OrderTotalAmount'), the region of the sale ('Region'), and the category of the product sold ('ProductCategory')."
+      }
+    ],
+    "output_data_element": [
+      {
+        "id": "DE_sales_confidence_interval",
+        "name": "Confidence Interval"
+      }
+    ],
+    "metadata": {
+      "created_at": "2023-03-15T00:00:00Z",
+      "type": "Deep Learning Regression"
+    },
+    "model_parameters": {
+      "algorithm": "Neural Network",
+      "layers": 3,
+      "neurons_per_layer": [128, 64, 32],
+      "activation_function": "relu"
+    },
+    "top_features": {
+      "OrderTotalAmount": 0.45,
+      "ProductCategory": 0.35,
+      "Region": 0.20
+    },
+    "performance_metrics": {
+      "mean_absolute_error": 9800,
+      "mean_percentage_error": 0.09,
+      "root_mean_squared_error": 14800
+    },
+    "users": [
+      {
+        "name": "Sales Director",
+        "user_account": "sales.director@company.com",
+        "entitlement": ["read", "write"],
+        "role": "Model Owner",
+        "relationship": "Owner"
+      },
+      {
+        "name": "Sales Analyst",
+        "user_account": "sales.analyst@company.com",
+        "entitlement": ["read"],
+        "role": "Model User",
+        "relationship": "Viewer"
+      }
+    ]
+  }
+}

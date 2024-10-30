@@ -1,0 +1,74 @@
+{
+  "name": "Inventory Management Prediction Model Version3",
+  "type": "object",
+  "properties": {
+    "model_id": "model_inventory_management_004",
+    "version_of": {
+      "name": "Inventory Management Prediction Model",
+      "model_metadata": {
+        "created_at": "2024-03-01T00:00:00Z",
+        "description": "This model predicts inventory levels and demand based on historical inventory data.",
+        "type": "Machine Learning Regression"
+      },
+      "model_id": "model_inventory_management_003"
+    },
+    "version": 3,
+    "latest_version": "True",
+    "input_data_elements": [
+      {
+        "name": "inventory_data",
+        "columns": ["ProductID", "ItemName", "ItemDescription", "ItemQuantity", "ItemReorderLevel"],
+        "generatedFrom": "Collecting detailed inventory data, including a unique identifier ('ProductID'), the name of the item ('ItemName'), a description of the item ('ItemDescription'), the quantity in stock ('ItemQuantity'), and the reorder level ('ItemReorderLevel')."
+      }
+    ],
+    "output_data_element": [
+      {
+        "id": "DE_predicted_demand_for_products",
+        "name": "Predicted Demand for Products"
+      }
+    ],
+    "metadata": {
+      "created_at": "2024-03-01T00:00:00Z",
+      "type": "Machine Learning Regression"
+    },
+    "model_parameters": {
+      "algorithm": "Linear Regression",
+      "fit_intercept": true,
+      "normalize": false
+    },
+    "top_features": {
+      "ItemQuantity": 0.40,
+      "ItemReorderLevel": 0.30,
+      "ItemName": 0.20,
+      "ProductID": 0.10
+    },
+    "performance_metrics": {
+      "mean_absolute_error": 0.70,
+      "mean_percentage_error": 0.55,
+      "root_mean_squared_error": 0.60
+    },
+    "users": [
+      {
+        "name": "Inventory Manager",
+        "user_account": "inventory.manager@company.com",
+        "entitlement": ["read", "write"],
+        "role": "Model Owner",
+        "relationship": "Owner"
+      },
+      {
+        "name": "Supply Chain Analyst",
+        "user_account": "supply.chain.analyst@company.com",
+        "entitlement": ["read", "write"],
+        "role": "Model User",
+        "relationship": "Maintain"
+      },
+      {
+        "name": "Data Scientist",
+        "user_account": "data.scientist@company.com",
+        "entitlement": ["read"],
+        "role": "Model User",
+        "relationship": "Viewer"
+      }
+    ]
+  }
+}

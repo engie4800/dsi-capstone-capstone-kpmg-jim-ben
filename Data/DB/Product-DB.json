@@ -1,0 +1,73 @@
+{
+  "database_name": "Product_Database",
+  "type": "relational",
+  "tables": [
+    {
+      "name": "Design Projects",
+      "columns": [
+        {"name": "DesignID", "type": "integer"},
+        {"name": "ProductID", "type": "integer"},
+        {"name": "DesignProjectTitle", "type": "string"},
+        {"name": "DesignDescription", "type": "string"},
+        {"name": "DesignStartDate", "type": "date"},
+        {"name": "DesignEndDate", "type": "date"},
+        {"name": "DesignBudget", "type": "float"},
+        {"name": "DesignStatus", "type": "string"}
+      ]
+    },
+    {
+      "name": "Product Specifications",
+      "columns": [
+        {"name": "SpecificationID", "type": "integer"},
+        {"name": "DesignID", "type": "integer"},
+        {"name": "SpecificationAttribute", "type": "string"},
+        {"name": "SpecificationDetail", "type": "string"}
+      ]
+    },
+    {
+      "name": "Prototype Testing",
+      "columns": [
+        {"name": "TestID", "type": "integer"},
+        {"name": "DesignID", "type": "integer"},
+        {"name": "TestingDate", "type": "date"},
+        {"name": "TestingOutcome", "type": "string"},
+        {"name": "TestingImprovementsSuggested", "type": "string"}
+      ]
+    },
+    {
+      "name": "Products",
+      "columns": [
+        {"name": "ProductID", "type": "integer"},
+        {"name": "DesignID", "type": "integer"},
+        {"name": "ProductName", "type": "string"},
+        {"name": "ProductSupplierID", "type": "integer"},
+        {"name": "ProductCategoryID", "type": "integer"},
+        {"name": "ProductQuantityPerUnit", "type": "string"},
+        {"name": "ProductUnitPrice", "type": "float"},
+        {"name": "ProductUnitsInStock", "type": "integer"},
+        {"name": "ProductUnitsOnOrder", "type": "integer"},
+        {"name": "ProductReorderLevel", "type": "integer"},
+        {"name": "ProductDiscontinued", "type": "boolean"}
+      ]
+    }
+  ],
+  "business_group": "Product",
+  "key_contact_information": [
+    {
+      "name": "Laura Johnson",
+      "email": "laura.johnson@productcompany.com"
+    }
+  ],
+  "entitlements": [
+    {
+      "user_name": "product_manager",
+      "user_account": "prod_manager@productcompany.com",
+      "entitlements": ["read", "write"]
+    },
+    {
+      "user_name": "design_specialist",
+      "user_account": "design_spec@productcompany.com",
+      "entitlements": ["read"]
+    }
+  ]
+}

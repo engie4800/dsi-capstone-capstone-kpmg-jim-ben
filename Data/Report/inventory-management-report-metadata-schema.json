@@ -1,0 +1,93 @@
+{
+  "name": "Inventory Management Report",
+  "sections": [
+    {
+      "name": "Stock Analysis",
+      "fields": [
+        {
+          "id": "products_with_low_stock",
+          "name": "Products with Low Stock",
+          "source": "columns",
+          "sourcedata": ["ProductID", "ItemName", "ItemDescription", "ItemQuantity", "ItemReorderLevel"],
+          "generatedFrom": "Identifying products where 'ItemQuantity' falls below 'ItemReorderLevel', indicating low stock levels."
+        },
+        {
+          "id": "average_days_to_reorder",
+          "name": "Average Days to Reorder",
+          "source": "columns",
+          "sourcedata": ["SupplierID", "SupplierName", "SupplierLeadTime"],
+          "generatedFrom": "Calculating the average time taken from stock reaching reorder level to the placement of a reorder with the 'Supplier', using 'SupplierLeadTime'."
+        }
+      ]
+    },
+    {
+      "name": "Inventory Turnover Rate",
+      "fields": [
+        {
+          "id": "inventory_turnover_ratio",
+          "name": "Inventory Turnover Ratio",
+          "source": "columns",
+          "sourcedata": ["ProductID", "ItemQuantity", "ItemReorderLevel"],
+          "generatedFrom": "Assessing how often inventory is sold and replenished by analyzing 'ItemQuantity' in relation to 'ItemReorderLevel'."
+        },
+        {
+          "id": "average_inventory_value",
+          "name": "Average Inventory Value",
+          "source": "columns",
+          "sourcedata": ["OrderID", "ProductID", "ItemQuantity", "ItemPrice"],
+          "generatedFrom": "Deriving the average value of inventory on hand by multiplying 'ItemQuantity' with 'ItemPrice' for each 'ProductID'."
+        }
+      ]
+    },
+    {
+      "name": "Demand Forecasting",
+      "fields": [
+        {
+          "id": "predicted_demand_for_products",
+          "name": "Predicted Demand for Products",
+          "source": "model",
+          "source_id": "DE_predicted_demand_for_products",
+          "generatedFrom": "Using demand forecasting models to predict future product demand based on historical 'ItemQuantity' sales data."
+        },
+        {
+          "id": "recommended_reorder_quantities",
+          "name": "Recommended Reorder Quantities",
+          "source": "model",
+          "source_id": "DE_recommended_reorder_quantities",
+          "generatedFrom": "Applying predictive analytics to recommend reorder quantities ensuring optimal inventory levels based on forecasted demand."
+        }
+      ]
+    }
+  ],
+  "business_group": "inventory",
+  "users": [
+    {
+      "name": "Inventory Manager",
+      "user_account": "inventory.manager@company.com",
+      "entitlement": ["read", "write"],
+      "role": "Report Owner",
+      "relationship": "Owner"
+    },
+    {
+      "name": "Supply Chain Analyst",
+      "user_account": "supply.chain.analyst@company.com",
+      "entitlement": ["read", "write"],
+      "role": "Report Analyst",
+      "relationship": "Maintain"
+    },
+    {
+      "name": "Warehouse Supervisor",
+      "user_account": "warehouse.supervisor@company.com",
+      "entitlement": ["read"],
+      "role": "Report User",
+      "relationship": "Entitled_On"
+    },
+    {
+      "name": "Procurement Specialist",
+      "user_account": "procurement.specialist@company.com",
+      "entitlement": ["read"],
+      "role": "Report User",
+      "relationship": "Entitled_On"
+    }
+  ]
+}

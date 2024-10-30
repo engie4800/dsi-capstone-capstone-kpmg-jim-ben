@@ -1,0 +1,60 @@
+{
+  "name": "Financial Health Prediction Model Version1",
+  "type": "object",
+  "properties": {
+    "model_id": "model_financial_health_002",
+    "version_of": {
+      "name": "Financial Health Prediction Model",
+      "model_metadata": {
+        "created_at": "2022-03-01T00:00:00Z",
+        "description": "This model predicts financial health metrics based on transaction and account data.",
+        "type": "Deep Learning Classification"
+      },
+      "model_id": "model_financial_health_001"
+    },
+    "version": 1,
+    "latest_version": "False",
+    "input_data_elements": [
+      {
+        "name": "financial_data",
+        "columns": ["TransactionID", "TransactionType", "TransactionAmount"],
+        "generatedFrom": "Compiling transaction data, including a unique identifier ('TransactionID'), the type of transaction ('TransactionType'), and the transaction amount ('TransactionAmount')."
+      }
+    ],
+    "output_data_element": [
+      {
+        "id": "DE_predicted_revenue_for_next_quarter",
+        "name": "Predicted Revenue for Next Quarter"
+      }
+    ],
+    "metadata": {
+      "created_at": "2022-03-15T00:00:00Z",
+      "type": "Deep Learning Classification"
+    },
+    "model_parameters": {
+      "algorithm": "Neural Network",
+      "layers": 3,
+      "neurons_per_layer": [128, 64, 32],
+      "activation_function": "relu"
+    },
+    "top_features": {
+      "TransactionAmount": 0.55,
+      "TransactionType": 0.30,
+      "TransactionID": 0.15
+    },
+    "performance_metrics": {
+      "accuracy": 0.88,
+      "precision": 0.85,
+      "recall": 0.83
+    },
+    "users": [
+      {
+        "name": "CFO",
+        "user_account": "cfo@company.com",
+        "entitlement": ["read", "write"],
+        "role": "Model Owner",
+        "relationship": "Owner"
+      }
+    ]
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "name": "Customer Satisfaction Survey Analysis",
+  "sections": [
+    {
+      "name": "Sentiment Analysis",
+      "fields": [
+        {
+          "id": "overall_sentiment",
+          "name": "Overall Sentiment",
+          "source": "columns",
+          "sourcedata": ["FeedbackID", "CustomerID", "FeedbackDate", "FeedbackRating", "FeedbackComments"],
+          "generatedFrom": "Analyzing 'FeedbackComments' and 'FeedbackRating' from customer feedback submitted on 'FeedbackDate' to gauge overall sentiment."
+        },
+        {
+          "id": "key_themes_in_feedback",
+          "name": "Key Themes in Feedback",
+          "source": "columns",
+          "sourcedata": ["FeedbackID", "FeedbackComments"],
+          "generatedFrom": "Extracting common themes and topics from 'FeedbackComments' to identify prevalent issues or praises."
+        }
+      ]
+    },
+    {
+      "name": "Survey Response Rate",
+      "fields": [
+        {
+          "id": "total_surveys_sent",
+          "name": "Total Surveys Sent",
+          "source": "calculation",
+          "sourcedata": ["FeedbackID"],
+          "generatedFrom": "Counting the total number of 'FeedbackID' entries to determine how many surveys were distributed."
+        },
+        {
+          "id": "response_rate",
+          "name": "Response Rate",
+          "source": "calculation",
+          "sourcedata": ["FeedbackID", "FeedbackDate"],
+          "generatedFrom": "Dividing the number of completed feedback forms by the total number sent, tracked by 'FeedbackID' and 'FeedbackDate'."
+        }
+      ]
+    },
+    {
+      "name": "Customer Satisfaction Prediction",
+      "fields": [
+        {
+          "id": "predicted_satisfaction_score",
+          "name": "Predicted Satisfaction Score",
+          "source": "model",
+          "source_id": "DE_predicted_satisfaction_score",
+          "generatedFrom": "Applying a predictive model to historical 'FeedbackRating' to estimate future customer satisfaction scores."
+        },
+        {
+          "id": "key_drivers_of_satisfaction",
+          "name": "Key Drivers of Satisfaction",
+          "source": "model",
+          "source_id": "DE_key_drivers_of_satisfaction",
+          "generatedFrom": "Identifying factors that significantly impact 'FeedbackRating' using a statistical model to determine drivers of satisfaction."
+        }
+      ]
+    }
+  ],
+  "business_group": "customer_service",
+  "users": [
+    {
+      "name": "Customer Service Director",
+      "user_account": "customer.service.director@company.com",
+      "entitlement": ["read", "write"],
+      "role": "Report Owner",
+      "relationship": "Owner"
+    },
+    {
+      "name": "Customer Insights Analyst",
+      "user_account": "customer.insights.analyst@company.com",
+      "entitlement": ["read", "write"],
+      "role": "Report Analyst",
+      "relationship": "Maintain"
+    },
+    {
+      "name": "Marketing Manager",
+      "user_account": "marketing.manager@company.com",
+      "entitlement": ["read"],
+      "role": "Report User",
+      "relationship": "Entitled_On"
+    },
+    {
+      "name": "Product Manager",
+      "user_account": "product.manager@company.com",
+      "entitlement": ["read"],
+      "role": "Report User",
+      "relationship": "Entitled_On"
+    }
+  ]
+}

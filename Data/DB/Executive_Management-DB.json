@@ -1,0 +1,58 @@
+{
+  "database_name": "Executive_Management_Database",
+  "type": "relational",
+  "tables": [
+    {
+      "name": "Departments",
+      "columns": [
+        {"name": "DepartmentID", "type": "integer"},
+        {"name": "DepartmentName", "type": "string"},
+        {"name": "ManagerID", "type": "integer"},
+        {"name": "DepartmentBudget", "type": "float"},
+        {"name": "Objectives", "type": "string"},
+        {"name": "DepartmentLocation", "type": "string"}
+      ]
+    },
+    {
+      "name": "Strategic Initiatives",
+      "columns": [
+        {"name": "InitiativeID", "type": "integer"},
+        {"name": "InitiativeTitle", "type": "string"},
+        {"name": "InitiativeDescription", "type": "string"},
+        {"name": "InitiativeStartDate", "type": "date"},
+        {"name": "InitiativeEndDate", "type": "date"},
+        {"name": "InitiativeBudget", "type": "float"},
+        {"name": "DepartmentID", "type": "integer"}
+      ]
+    },
+    {
+      "name": "Performance Metrics",
+      "columns": [
+        {"name": "PerformanceMetricID", "type": "integer"},
+        {"name": "DepartmentID", "type": "integer"},
+        {"name": "PerformanceMetric", "type": "string"},
+        {"name": "PerformanceTarget", "type": "float"},
+        {"name": "PerformanceActual", "type": "float"}
+      ]
+    }
+  ],
+  "business_group": "Executive Management",
+  "key_contact_information": [
+    {
+      "name": "John Doe",
+      "email": "john.doe@executive.com"
+    }
+  ],
+  "entitlements": [
+    {
+      "user_name": "executive_manager",
+      "user_account": "exec_manager@executive.com",
+      "entitlements": ["read", "write"]
+    },
+    {
+      "user_name": "strategy_analyst",
+      "user_account": "strategy_analyst@executive.com",
+      "entitlements": ["read"]
+    }
+  ]
+}

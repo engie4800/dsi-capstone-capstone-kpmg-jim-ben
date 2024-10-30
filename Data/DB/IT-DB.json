@@ -1,0 +1,67 @@
+{
+  "database_name": "IT_Database",
+  "type": "relational",
+  "tables": [
+    {
+      "name": "Hardware Assets",
+      "columns": [
+        {"name": "AssetID", "type": "integer"},
+        {"name": "HardwareType", "type": "string"},
+        {"name": "HardwarePurchaseDate", "type": "date"},
+        {"name": "WarrantyExpiryDate", "type": "date"},
+        {"name": "HardwareUser", "type": "string"}
+      ]
+    },
+    {
+      "name": "Software Licenses",
+      "columns": [
+        {"name": "LicenseID", "type": "integer"},
+        {"name": "SoftwareName", "type": "string"},
+        {"name": "SoftwareVendor", "type": "string"},
+        {"name": "SoftwarePurchaseDate", "type": "date"},
+        {"name": "LicenseExpiryDate", "type": "date"}
+      ]
+    },
+    {
+      "name": "IT Support Tickets",
+      "columns": [
+        {"name": "TicketID", "type": "integer"},
+        {"name": "TicketSubject", "type": "string"},
+        {"name": "TicketStatus", "type": "string"},
+        {"name": "TicketOpenDate", "type": "date"},
+        {"name": "TicketCloseDate", "type": "date"},
+        {"name": "EmployeeID", "type": "integer"}
+      ]
+    },
+    {
+      "name": "IT Projects",
+      "columns": [
+        {"name": "ProjectID", "type": "integer"},
+        {"name": "ITProjectTitle", "type": "string"},
+        {"name": "ProjectStartDate", "type": "date"},
+        {"name": "ProjectEndDate", "type": "date"},
+        {"name": "ProjectStatus", "type": "string"},
+        {"name": "ProjectBudget", "type": "float"}
+      ]
+    }
+  ],
+  "business_group": "Information Technology",
+  "key_contact_information": [
+    {
+      "name": "Sam Wilson",
+      "email": "sam.wilson@itcompany.com"
+    }
+  ],
+  "entitlements": [
+    {
+      "user_name": "it_manager",
+      "user_account": "it_manager@itcompany.com",
+      "entitlements": ["read", "write", "admin"]
+    },
+    {
+      "user_name": "support_specialist",
+      "user_account": "support_spec@itcompany.com",
+      "entitlements": ["read"]
+    }
+  ]
+}

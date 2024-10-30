@@ -1,0 +1,68 @@
+{
+  "name": "Employee Productivity Prediction Model Version3",
+  "type": "object",
+  "properties": {
+    "model_id": "model_employee_productivity_004",
+    "version_of": {
+      "name": "Employee Productivity Prediction Model",
+      "model_metadata": {
+        "created_at": "2024-03-01T00:00:00Z",
+        "description": "This model predicts employee productivity based on performance reviews and training data.",
+        "type": "Machine Learning Regression"
+      },
+      "model_id": "model_employee_productivity_003"
+    },
+    "version": 3,
+    "latest_version": "True",
+    "input_data_elements": [
+      {
+        "name": "employee_performance_data",
+        "columns": ["PerformanceID", "EmployeeID", "PerformanceReviewDate", "PerformanceScore", "PerformanceComments"],
+        "generatedFrom": "Collecting comprehensive performance data, including a unique identifier ('PerformanceID'), employee identifier ('EmployeeID'), review date ('PerformanceReviewDate'), performance score ('PerformanceScore'), and any additional comments ('PerformanceComments')."
+      }
+    ],
+    "output_data_element": [
+      {
+        "id": "DE_predicted_productivity_score",
+        "name": "Predicted Productivity Score"
+      }
+    ],
+    "metadata": {
+      "created_at": "2024-03-01T00:00:00Z",
+      "type": "Machine Learning Regression"
+    },
+    "model_parameters": {
+      "algorithm": "Random Forest",
+      "trees": 100,
+      "max_depth": 10,
+      "min_samples_split": 2
+    },
+    "top_features": {
+      "PerformanceScore": 0.40,
+      "PerformanceReviewDate": 0.30,
+      "PerformanceComments": 0.20,
+      "EmployeeID": 0.10
+    },
+    "performance_metrics": {
+      "mean_absolute_error": 0.70,
+      "mean_percentage_error": 0.55,
+      "root_mean_squared_error": 0.60
+    },
+    "users": [
+      {
+        "name": "HR Director",
+        "user_account": "hr.director@company.com",
+        "entitlement": ["read", "write"],
+        "role": "Model Owner",
+        "relationship": "Owner"
+      },
+      {
+        "name": "HR Analyst",
+        "user_account": "hr.analyst@company.com",
+        "entitlement": ["read", "write"],
+        "role": "Model User",
+        "relationship": "Maintain"
+      }
+    ]
+  }
+}

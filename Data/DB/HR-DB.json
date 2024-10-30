@@ -1,0 +1,67 @@
+{
+  "database_name": "HR_Database",
+  "type": "relational",
+  "tables": [
+    {
+      "name": "Employees",
+      "columns": [
+        {"name": "EmployeeID", "type": "integer"},
+        {"name": "DepartmentID", "type": "integer"},
+        {"name": "EmployeeName", "type": "string"},
+        {"name": "EmployeeRole", "type": "string"},
+        {"name": "EmployeeSalary", "type": "float"},
+        {"name": "EmployeeHireDate", "type": "date"},
+        {"name": "ManagerID", "type": "integer"},
+        {"name": "EmployeeEmail", "type": "string"},  
+        {"name": "EmployeePhoneNumber", "type": "string"}  
+      ]
+    },
+    {
+      "name": "Benefits",
+      "columns": [
+        {"name": "BenefitID", "type": "integer"},
+        {"name": "BenefitType", "type": "string"},
+        {"name": "BenefitCost", "type": "float"},
+        {"name": "EmployeeID", "type": "integer"}
+      ]
+    },
+    {
+      "name": "Training Programs",
+      "columns": [
+        {"name": "ProgramID", "type": "integer"},
+        {"name": "ProgramDescription", "type": "string"},
+        {"name": "TrainingDate", "type": "date"},
+        {"name": "TrainingCost", "type": "float"}
+      ]
+    },
+    {
+      "name": "Employee Performance",
+      "columns": [
+        {"name": "PerformanceID", "type": "integer"},
+        {"name": "EmployeeID", "type": "integer"},
+        {"name": "PerformanceReviewDate", "type": "date"},
+        {"name": "PerformanceScore", "type": "integer"},
+        {"name": "PerformanceComments", "type": "string"}
+      ]
+    }
+  ],
+  "business_group": "human_resources",
+  "key_contact_information": [
+    {
+      "name": "Alice Johnson",
+      "email": "alice.johnson@hrcompany.com"
+    }
+  ],
+  "entitlements": [
+    {
+      "user_name": "hr_manager",
+      "user_account": "hr_manager@hrcompany.com",
+      "entitlements": ["read", "write"]
+    },
+    {
+      "user_name": "hr_viewer",
+      "user_account": "hr_viewer@hrcompany.com",
+      "entitlements": ["read"]
+    }
+  ]
+}

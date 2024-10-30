@@ -1,0 +1,93 @@
+{
+  "name": "Financial Health Dashboard",
+  "sections": [
+    {
+      "name": "Expense Analysis",
+      "fields": [
+        {
+          "id": "top_expense_categories",
+          "name": "Top Expense Categories",
+          "source": "columns",
+          "sourcedata": ["TransactionID", "TransactionType", "TransactionAmount", "TransactionDate"],
+          "generatedFrom": "Categorizing expenses by 'TransactionType' and summing up 'TransactionAmount' to identify the categories with the highest spending."
+        },
+        {
+          "id": "cost_reduction_opportunities",
+          "name": "Cost Reduction Opportunities",
+          "source": "columns",
+          "sourcedata": ["AccountID", "AccountType"],
+          "generatedFrom": "Analyzing spending patterns by 'AccountType' to uncover potential areas for cost savings."
+        }
+      ]
+    },
+    {
+      "name": "Cash Flow Analysis",
+      "fields": [
+        {
+          "id": "net_cash_flow",
+          "name": "Net Cash Flow",
+          "source": "columns",
+          "sourcedata": ["TransactionID", "TransactionType", "TransactionAmount", "TransactionDate"],
+          "generatedFrom": "Subtracting total outflows from total inflows per 'TransactionDate' to calculate 'Net Cash Flow'."
+        },
+        {
+          "id": "cash_flow_trends",
+          "name": "Cash Flow Trends",
+          "source": "columns",
+          "sourcedata": ["AccountID", "AccountBalance"],
+          "generatedFrom": "Tracking the 'AccountBalance' over time to discern patterns in cash flow movements."
+        }
+      ]
+    },
+    {
+      "name": "Revenue Forecasting",
+      "fields": [
+        {
+          "id": "predicted_revenue_for_next_quarter",
+          "name": "Predicted Revenue for Next Quarter",
+          "source": "model",
+          "source_id": "DE_predicted_revenue_for_next_quarter",
+          "generatedFrom": "Utilizing historical 'TransactionAmount' data to project revenue for the upcoming quarter with predictive modeling."
+        },
+        {
+          "id": "revenue_confidence_interval",
+          "name": "Revenue Confidence Interval",
+          "source": "model",
+          "source_id": "DE_revenue_confidence_interval",
+          "generatedFrom": "Estimating the reliability of the revenue prediction by calculating a confidence interval from the model's output."
+        }
+      ]
+    }
+  ],
+  "business_group": "finance",
+  "users": [
+    {
+      "name": "CFO",
+      "user_account": "cfo@company.com",
+      "entitlement": ["read", "write"],
+      "role": "Report Owner",
+      "relationship": "Owner"
+    },
+    {
+      "name": "Financial Analyst",
+      "user_account": "financial.analyst@company.com",
+      "entitlement": ["read", "write"],
+      "role": "Report Analyst",
+      "relationship": "Maintain"
+    },
+    {
+      "name": "Accounting Manager",
+      "user_account": "accounting.manager@company.com",
+      "entitlement": ["read"],
+      "role": "Report User",
+      "relationship": "Entitled_On"
+    },
+    {
+      "name": "Budget Coordinator",
+      "user_account": "budget.coordinator@company.com",
+      "entitlement": ["read"],
+      "role": "Report User",
+      "relationship": "Entitled_On"
+    }
+  ]
+}

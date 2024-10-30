@@ -3,6 +3,7 @@ from clients.neo4j_client import Neo4jClient
 from clients.openai_client import OpenAiClient
 from clients.langchain_client import LangChainClient
 from components.intent_matching import get_input_parameter, get_request_intent
+from components.extract_node_info import match_node
 from constants.prompt_templates import USER_RESPONSE_TEMPLATE, INTENT_MATCHING_TEMPLATE
 from constants.chatbot_responses import CHATBOT_INTRO_MESSAGE, FAILED_INTENT_MATCH, CYPHER_QUERY_ERROR, NOT_RELEVANT_USER_REQUEST, NO_RESULTS_FOUND
 from constants.db_constants import DATABASE_SCHEMA
@@ -33,6 +34,10 @@ def rag_chatbot(user_input):
     # Get user request intent
     get_request_intent_response = get_request_intent(user_input, openai)
     intent_type = get_request_intent_response[0]
+
+    # Get node info
+    node_info = match_node(user_input) # use this node info as retriver embedding graph
+    print(f"The embedding graph to use is {node_info}.")
     cypher_query_response = {}
 
     # Irrelevant user request

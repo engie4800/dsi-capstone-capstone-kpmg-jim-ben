@@ -1,0 +1,58 @@
+{
+  "name": "Inventory Management Prediction Model Version1",
+  "type": "object",
+  "properties": {
+    "model_id": "model_inventory_management_002",
+    "version_of": {
+      "name": "Inventory Management Prediction Model",
+      "model_metadata": {
+        "created_at": "2022-03-01T00:00:00Z",
+        "description": "This model predicts inventory levels and demand based on historical inventory data.",
+        "type": "Time Series Forecasting"
+      },
+      "model_id": "model_inventory_management_001"
+    },
+    "version": 1,
+    "latest_version": "False",
+    "input_data_elements": [
+      {
+        "name": "inventory_data",
+        "columns": ["ProductID", "ItemName", "ItemQuantity"],
+        "generatedFrom": "Collecting data on inventory items, including a unique identifier ('ProductID'), the name of the item ('ItemName'), and the quantity in stock ('ItemQuantity')."
+      }
+    ],
+    "output_data_element": [
+      {
+        "id": "DE_recommended_reorder_quantities",
+        "name": "Recommended Reorder Quantities"
+      }
+    ],
+    "metadata": {
+      "created_at": "2022-03-15T00:00:00Z",
+      "type": "Time Series Forecasting"
+    },
+    "model_parameters": {
+      "algorithm": "ARIMA",
+      "order": [1, 1, 1]
+    },
+    "top_features": {
+      "ItemQuantity": 0.50,
+      "ItemName": 0.30,
+      "ProductID": 0.20
+    },
+    "performance_metrics": {
+      "mean_absolute_error": 0.75,
+      "mean_percentage_error": 0.60,
+      "root_mean_squared_error": 0.65
+    },
+    "users": [
+      {
+        "name": "Inventory Manager",
+        "user_account": "inventory.manager@company.com",
+        "entitlement": ["read", "write"],
+        "role": "Model Owner",
+        "relationship": "Owner"
+      }
+    ]
+  }
+}
